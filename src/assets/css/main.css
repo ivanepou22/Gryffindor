@@ -1442,7 +1442,7 @@ top: -1px;
 }
 
 .header .topbar {
-  background-color: #424447;
+  background-color: #1261d6;
   padding: 10px 0;
 }
 
@@ -1467,7 +1467,7 @@ top: -1px;
   color: #fff !important;
   font-weight: 500;
   font-size: 14px;
-  background-color: #424447 !important;
+  background-color: #1261d6 !important;
 }
 
 .header .topbar .top-left .menu-top-link .select-position select:focus {
@@ -1534,7 +1534,7 @@ top: -1px;
 }
 
 .header .topbar .top-middle .useful-links li a:hover {
-  color: #0167F3;
+  color: #000;
 }
 
 .header .topbar .top-end {
@@ -2530,7 +2530,7 @@ top: 2px;
 }
 
 .header .navbar-brand img {
-  width: 200px;
+  width: 45px;
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
@@ -2873,7 +2873,7 @@ top: 2px;
 .hero-area {
   position: relative;
   background-color: #fff;
-  margin-top: 12px;
+  margin-top: 10px;
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
@@ -4433,12 +4433,12 @@ top: 2px;
 }
 
 .footer .footer-top .footer-logo a img {
-  width: 200px;
+  width: 50px;
 }
 
 @media only screen and (min-width: 768px) and (max-width: 991px) {
   .footer .footer-top .footer-logo a img {
-    width: 190px;
+    width: 40px;
   }
 }
 
