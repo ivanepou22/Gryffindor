@@ -240,14 +240,13 @@ function Header() {
                                             <li className="nav-item">
                                                 <a className="dd-menu collapsed" href="/" data-bs-toggle="collapse"
                                                     data-bs-target="#submenu-1-2" aria-controls="navbarSupportedContent"
-                                                    aria-expanded="false" aria-label="Toggle navigation">Pages</a>
+                                                    aria-expanded="false" aria-label="Toggle navigation">Account</a>
                                                 <ul className="sub-menu collapse" id="submenu-1-2">
-                                                    <li className="nav-item"><a href="/">About Us</a></li>
-                                                    <li className="nav-item"><a href="/">Faq</a></li>
-                                                    <li className="nav-item"><a href="/">Login</a></li>
-                                                    <li className="nav-item"><a href="/">Register</a></li>
-                                                    <li className="nav-item"><a href="/">Mail Success</a></li>
-                                                    <li className="nav-item"><a href="/">404 Error</a></li>
+                                                    <li className="nav-item"><a href="/">My Account</a></li>
+                                                    <li className="nav-item"><a href="/">Inbox</a></li>
+                                                    <li className="nav-item"><a href="/">Orders</a></li>
+                                                    <li className="nav-item"><a href="/">Credit Details</a></li>
+                                                    <li className="nav-item"><a href="/">Saved Items</a></li>
                                                 </ul>
                                             </li>
                                             <li className="nav-item">
@@ -255,23 +254,21 @@ function Header() {
                                                     data-bs-target="#submenu-1-3" aria-controls="navbarSupportedContent"
                                                     aria-expanded="false" aria-label="Toggle navigation">Shop</a>
                                                 <ul className="sub-menu collapse" id="submenu-1-3">
-                                                    <li className="nav-item"><a href="/">Shop Grid</a></li>
-                                                    <li className="nav-item"><a href="/">Shop List</a></li>
-                                                    <li className="nav-item"><a href="/">shop Single</a></li>
-                                                    <li className="nav-item"><a href="/">Cart</a></li>
-                                                    <li className="nav-item"><a href="/">Checkout</a></li>
+                                                    <li className="nav-item"><a href="/products">Products</a></li>
+                                                    <li className="nav-item"><a href="/wishlist">Wish List</a></li>
+                                                    <li className="nav-item"><a href="/cart">Cart</a></li>
                                                 </ul>
                                             </li>
                                             <li className="nav-item">
                                                 <a className="dd-menu collapsed" href="/" data-bs-toggle="collapse"
                                                     data-bs-target="#submenu-1-4" aria-controls="navbarSupportedContent"
-                                                    aria-expanded="false" aria-label="Toggle navigation">Blog</a>
+                                                    aria-expanded="false" aria-label="Toggle navigation">Help</a>
                                                 <ul className="sub-menu collapse" id="submenu-1-4">
-                                                    <li className="nav-item"><a href="/">Blog Grid Sidebar</a>
-                                                    </li>
-                                                    <li className="nav-item"><a href="/">Blog Single</a></li>
-                                                    <li className="nav-item"><a href="/">Blog Single
-                                                        Sibebar</a></li>
+                                                    <li className="nav-item"><a href="/">Help Center</a></li>
+                                                    <li className="nav-item"><a href="/">Place & Track Order</a></li>
+                                                    <li className="nav-item"><a href="/">Order Cancellation</a></li>
+                                                    <li className="nav-item"><a href="/">Payment</a></li>
+                                                    <li className="nav-item"><a href="/">Returns and Refunds</a></li>
                                                 </ul>
                                             </li>
                                             <li className="nav-item">

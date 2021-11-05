@@ -189,7 +189,7 @@ function Cart() {
                                             </ul>
                                             <div className="button">
                                                 <a href="/checkout" className="btn">Checkout</a>
-                                                <a href="/" className="btn btn-alt">Continue shopping</a>
+                                                <a href="/products" className="btn btn-alt">Continue shopping</a>
                                             </div>
                                         </div>
                                     </div>
