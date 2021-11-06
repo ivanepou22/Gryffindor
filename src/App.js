@@ -12,20 +12,40 @@ import Checkout from "./Pages/Checkout";
 import Products from "./Pages/Products";
 import { useStateValue } from "./Context/StateProvider";
 import { useEffect } from "react";
+import { auth } from "./firebase";
+import HeaderAdmin from "./Admin/HeaderAdmin";
+import Admin from "./Admin/Admin";
 
 
 
 function App() {
-  const [{basket}, dispatch] = useStateValue();
-  console.log(basket)
+  const [{user}, dispatch] = useStateValue();
   //piece of code which runs based on a given condition
   //useEfect hook
   useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((authUser) => {
+      if(authUser) {
+        //user is logged in
+        dispatch({
+          type: 'SET_USER',
+          user: authUser
+        })
+      } else {
+        //user is logged out
+        dispatch({
+          type: 'SET_USER',
+          user: null
+        })
+      }
+    })
 
     return () => {
+      unsubscribe();
+    };
 
-    }
   }, [])
+
+  console.log(`user is: ${user}`)
 
   return (
     <div className="App">
@@ -60,6 +80,11 @@ function App() {
               <Header/>
               <Products />
               <Footer />
+            </Route>
+            <Route exact path="/admin">
+                <HeaderAdmin />
+                <Admin />
+                <Footer />
             </Route>
             <Route exact path="/">
               <Header/>

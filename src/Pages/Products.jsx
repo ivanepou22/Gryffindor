@@ -1,10 +1,26 @@
 import React from 'react'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
+import { db } from '../firebase'
 import './Products.css'
 import prod1 from '../assets/images/products/product-1.jpg'
 import prod2 from '../assets/images/products/product-6.jpg'
 import prod3 from '../assets/images/products/product-7.jpg'
 
 function Products() {
+    const [products, setProducts] = useState([]);
+
+    //get data from firebase
+    useEffect(() => {
+        db.collection('products')
+            .onSnapshot(snapshot => {
+                setProducts(snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    product: doc.data()
+                })))
+            })
+    }, [])
+
     return (
         <>
             <div className="breadcrumbs">
@@ -17,8 +33,8 @@ function Products() {
                         </div>
                         <div className="col-lg-6 col-md-6 col-12">
                             <ul className="breadcrumb-nav">
-                                <li><a href="/"><i className="lni lni-home"></i> Home</a></li>
-                                <li><a href="/">Shop</a></li>
+                                <li><Link to="/"><i className="lni lni-home"></i> Home</Link></li>
+                                <li><Link to="/">Shop</Link></li>
                                 <li>Products</li>
                             </ul>
                         </div>
@@ -45,25 +61,25 @@ function Products() {
                                     <h3>All Categories</h3>
                                     <ul className="list">
                                         <li>
-                                            <a href="/products">Computers &amp; Accessories </a><span>(1138)</span>
+                                            <Link to="/products">Computers &amp; Accessories </Link><span>(1138)</span>
                                         </li>
                                         <li>
-                                            <a href="/products">Smartphones &amp; Tablets</a><span>(2356)</span>
+                                            <Link to="/products">Smartphones &amp; Tablets</Link><span>(2356)</span>
                                         </li>
                                         <li>
-                                            <a href="/products">TV, Video &amp; Audio</a><span>(420)</span>
+                                            <Link to="/products">TV, Video &amp; Audio</Link><span>(420)</span>
                                         </li>
                                         <li>
-                                            <a href="/products">Cameras, Photo &amp; Video</a><span>(874)</span>
+                                            <Link to="/products">Cameras, Photo &amp; Video</Link><span>(874)</span>
                                         </li>
                                         <li>
-                                            <a href="/products">Headphones</a><span>(1239)</span>
+                                            <Link to="/products">Headphones</Link><span>(1239)</span>
                                         </li>
                                         <li>
-                                            <a href="/products">Wearable Electronics</a><span>(340)</span>
+                                            <Link to="/products">Wearable Electronics</Link><span>(340)</span>
                                         </li>
                                         <li>
-                                            <a href="/products">Printers &amp; Ink</a><span>(512)</span>
+                                            <Link to="/products">Printers &amp; Ink</Link><span>(512)</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -194,489 +210,106 @@ function Products() {
                                 <div className="tab-content" id="nav-tabContent">
                                     <div className="tab-pane fade active show" id="nav-grid" role="tabpanel" aria-labelledby="nav-grid-tab">
                                         <div className="row">
-                                            <div className="col-lg-4 col-md-6 col-12">
+                                            {
+                                                products.map(({ id, product }) => (
+                                                    <div className="col-lg-4 col-md-6 col-12" key={id}>
+                                                        {/* <!-- Start Single Product --> */}
+                                                        <div className="single-product">
+                                                            <div className="product-image">
+                                                                <img src={product.image} alt="#" />
+                                                                {
+                                                                    product.discount === 0 ? ('') : (
+                                                                        <span className="sale-tag">-{product.discount}%</span>
+                                                                    )
+                                                                }
+                                                                <Link key={product.id}
+                                                                    to={{
+                                                                        pathname: `/product/${id}`,
+                                                                        state: product,
+                                                                    }}
+                                                                >
+                                                                    <div className="button">
+                                                                        <button className="btn"><i className="lni lni-cart"></i> Add to Cart</button>
+                                                                    </div>
+                                                                </Link>
+                                                            </div>
+                                                            <div className="product-info">
+                                                                <span className="category">{product.category}</span>
+                                                                <h4 className="title">
+                                                                    <Link key={product.id}
+                                                                        to={{
+                                                                            pathname: `/product/${id}`,
+                                                                            state: product,
+                                                                        }}
+                                                                    >
+                                                                        {product.name}
+                                                                    </Link>
+                                                                </h4>
+                                                                <ul className="review">
+                                                                    {
+                                                                        Array(product.rating).fill().map((_, index) => (
+                                                                            <li key={index}><i className="lni lni-star-filled"></i></li>
+                                                                        ))
+                                                                    }
+                                                                    <li><span>{product.rating} Review(s)</span></li>
+                                                                </ul>
+                                                                <div className="price">
+                                                                    {
+                                                                        product.discount === 0 ? (
+                                                                            <span>
+                                                                                {
+                                                                                    product.price.toLocaleString('en-US', {
+                                                                                        style: 'currency',
+                                                                                        currency: 'USD',
+                                                                                        maximumFractionDigits: 2,
+                                                                                    })
+                                                                                }
+                                                                            </span>
+                                                                        ) : (
+                                                                            <span>
+                                                                                {
+                                                                                    (product.price - (product.price * product.discount / 100)).toLocaleString('en-US', {
+                                                                                        style: 'currency',
+                                                                                        currency: 'USD',
+                                                                                        maximumFractionDigits: 2,
+                                                                                    })
+                                                                                }
+                                                                            </span>
+                                                                        )
 
-                                                <div className="single-product">
-                                                    <div className="product-image">
-                                                        <img src={prod1} alt="#" />
-                                                        <div class="button">
-                                                            <a href="/product" class="btn"><i class="lni lni-cart"></i> Add to Cart</a>
+                                                                    }
+                                                                    {
+                                                                        product.discount === 0 ? ('') : (
+                                                                            <span className="discount-price">
+                                                                                {
+                                                                                    product.price.toLocaleString('en-US', {
+                                                                                        style: 'currency',
+                                                                                        currency: 'USD',
+                                                                                        maximumFractionDigits: 2,
+                                                                                    })
+                                                                                }
+                                                                            </span>
+                                                                        )
+                                                                    }
+                                                                </div>
+                                                            </div>
                                                         </div>
+                                                        {/* <!-- End Single Product --> */}
                                                     </div>
-                                                    <div className="product-info">
-                                                        <span className="category">Watches</span>
-                                                        <h4 className="title">
-                                                            <a href="/product">Xiaomi Mi Band 5</a>
-                                                        </h4>
-                                                        <ul className="review">
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star"></i></li>
-                                                            <li><span>4.0 Review(s)</span></li>
-                                                        </ul>
-                                                        <div className="price">
-                                                            <span>$199.00</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
 
-                                            </div>
-                                            <div className="col-lg-4 col-md-6 col-12">
-
-                                                <div className="single-product">
-                                                    <div className="product-image">
-                                                        <img src={prod2} alt="#" />
-                                                        <span class="sale-tag">-25%</span>
-                                                        <div class="button">
-                                                            <a href="/product" class="btn"><i class="lni lni-cart"></i> Add to Cart</a>
-                                                        </div>
-                                                    </div>
-                                                    <div className="product-info">
-                                                        <span className="category">Speaker</span>
-                                                        <h4 className="title">
-                                                            <a href="/product">Bluetooth Speaker</a>
-                                                        </h4>
-                                                        <ul className="review">
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><span>5.0 Review(s)</span></li>
-                                                        </ul>
-                                                        <div className="price">
-                                                            <span>$275.00</span>
-                                                            <span className="discount-price">$300.00</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <div className="col-lg-4 col-md-6 col-12">
-
-                                                <div className="single-product">
-                                                    <div className="product-image">
-                                                        <img src={prod3} alt="#" />
-                                                        <div class="button">
-                                                            <a href="/product" class="btn"><i class="lni lni-cart"></i> Add to Cart</a>
-                                                        </div>
-                                                    </div>
-                                                    <div className="product-info">
-                                                        <span className="category">Camera</span>
-                                                        <h4 className="title">
-                                                            <a href="/product">WiFi Security Camera</a>
-                                                        </h4>
-                                                        <ul className="review">
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><span>5.0 Review(s)</span></li>
-                                                        </ul>
-                                                        <div className="price">
-                                                            <span>$399.00</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <div className="col-lg-4 col-md-6 col-12">
-
-                                                <div className="single-product">
-                                                    <div className="product-image">
-                                                        <img src={prod1} alt="#" />
-                                                        <span class="new-tag">New</span>
-                                                        <div class="button">
-                                                            <a href="/product" class="btn"><i class="lni lni-cart"></i> Add to Cart</a>
-                                                        </div>
-                                                    </div>
-                                                    <div className="product-info">
-                                                        <span className="category">Phones</span>
-                                                        <h4 className="title">
-                                                            <a href="/product">iphone 6x plus</a>
-                                                        </h4>
-                                                        <ul className="review">
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><span>5.0 Review(s)</span></li>
-                                                        </ul>
-                                                        <div className="price">
-                                                            <span>$400.00</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <div className="col-lg-4 col-md-6 col-12">
-
-                                                <div className="single-product">
-                                                    <div className="product-image">
-                                                        <img src={prod2} alt="#" />
-                                                        <div class="button">
-                                                            <a href="/product" class="btn"><i class="lni lni-cart"></i> Add to Cart</a>
-                                                        </div>
-                                                    </div>
-                                                    <div className="product-info">
-                                                        <span className="category">Headphones</span>
-                                                        <h4 className="title">
-                                                            <a href="/product">Wireless Headphones</a>
-                                                        </h4>
-                                                        <ul className="review">
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><span>5.0 Review(s)</span></li>
-                                                        </ul>
-                                                        <div className="price">
-                                                            <span>$350.00</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <div className="col-lg-4 col-md-6 col-12">
-
-                                                <div className="single-product">
-                                                    <div className="product-image">
-                                                        <img src={prod3} alt="#" />
-                                                        <div class="button">
-                                                            <a href="/product" class="btn"><i class="lni lni-cart"></i> Add to Cart</a>
-                                                        </div>
-                                                    </div>
-                                                    <div className="product-info">
-                                                        <span className="category">Speaker</span>
-                                                        <h4 className="title">
-                                                            <a href="/product">Mini Bluetooth Speaker</a>
-                                                        </h4>
-                                                        <ul className="review">
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star"></i></li>
-                                                            <li><span>4.0 Review(s)</span></li>
-                                                        </ul>
-                                                        <div className="price">
-                                                            <span>$70.00</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <div className="col-lg-4 col-md-6 col-12">
-
-                                                <div className="single-product">
-                                                    <div className="product-image">
-                                                        <img src={prod1} alt="#" />
-                                                        <span class="sale-tag">-50%</span>
-                                                        <div class="button">
-                                                            <a href="/product" class="btn"><i class="lni lni-cart"></i> Add to Cart</a>
-                                                        </div>
-                                                    </div>
-                                                    <div className="product-info">
-                                                        <span className="category">Headphones</span>
-                                                        <h4 className="title">
-                                                            <a href="/product">Wireless Headphones</a>
-                                                        </h4>
-                                                        <ul className="review">
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star"></i></li>
-                                                            <li><span>4.0 Review(s)</span></li>
-                                                        </ul>
-                                                        <div className="price">
-                                                            <span>$100.00</span>
-                                                            <span className="discount-price">$200.00</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <div className="col-lg-4 col-md-6 col-12">
-
-                                                <div className="single-product">
-                                                    <div className="product-image">
-                                                        <img src={prod2} alt="#" />
-                                                        <div class="button">
-                                                            <a href="/product" class="btn"><i class="lni lni-cart"></i> Add to Cart</a>
-                                                        </div>
-                                                    </div>
-                                                    <div className="product-info">
-                                                        <span className="category">Laptop</span>
-                                                        <h4 className="title">
-                                                            <a href="/product">Apple MacBook Air</a>
-                                                        </h4>
-                                                        <ul className="review">
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><span>5.0 Review(s)</span></li>
-                                                        </ul>
-                                                        <div className="price">
-                                                            <span>$899.00</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <div className="col-lg-4 col-md-6 col-12">
-
-                                                <div className="single-product">
-                                                    <div className="product-image">
-                                                        <img src={prod3} alt="#" />
-                                                        <span class="sale-tag">-25%</span>
-                                                        <div class="button">
-                                                            <a href="/product" class="btn"><i class="lni lni-cart"></i> Add to Cart</a>
-                                                        </div>
-                                                    </div>
-                                                    <div className="product-info">
-                                                        <span className="category">Speaker</span>
-                                                        <h4 className="title">
-                                                            <a href="/product">Bluetooth Speaker</a>
-                                                        </h4>
-                                                        <ul className="review">
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><i className="lni lni-star-filled"></i></li>
-                                                            <li><span>5.0 Review(s)</span></li>
-                                                        </ul>
-                                                        <div className="price">
-                                                            <span>$275.00</span>
-                                                            <span className="discount-price">$300.00</span>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
+                                                ))
+                                            }
                                         </div>
                                         <div className="row">
                                             <div className="col-12">
 
                                                 <div className="pagination left">
                                                     <ul className="pagination-list">
-                                                        <li><a href="/">1</a></li>
-                                                        <li className="active"><a href="/">2</a></li>
-                                                        <li><a href="/">3</a></li>
-                                                        <li><a href="/">4</a></li>
-                                                        <li><a href="/"><i className="lni lni-chevron-right"></i></a></li>
-                                                    </ul>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="tab-pane fade" id="nav-list" role="tabpanel" aria-labelledby="nav-list-tab">
-                                        <div className="row">
-                                            <div className="col-lg-12 col-md-12 col-12">
-
-                                                <div className="single-product">
-                                                    <div className="row align-items-center">
-                                                        <div className="col-lg-4 col-md-4 col-12">
-                                                            <div className="product-image">
-                                                                <img src="assets/images/products/product-1.jpg" alt="#" />
-                                                                <div class="button">
-                                                                    <a href="/product" class="btn"><i class="lni lni-cart"></i> Add to
-                                                                        Cart</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-lg-8 col-md-8 col-12">
-                                                            <div className="product-info">
-                                                                <span className="category">Watches</span>
-                                                                <h4 className="title">
-                                                                    <a href="/product">Xiaomi Mi Band 5</a>
-                                                                </h4>
-                                                                <ul className="review">
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star"></i></li>
-                                                                    <li><span>4.0 Review(s)</span></li>
-                                                                </ul>
-                                                                <div className="price">
-                                                                    <span>$199.00</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <div className="col-lg-12 col-md-12 col-12">
-
-                                                <div className="single-product">
-                                                    <div className="row align-items-center">
-                                                        <div className="col-lg-4 col-md-4 col-12">
-                                                            <div className="product-image">
-                                                                <img src="assets/images/products/product-2.jpg" alt="#" />
-                                                                <span class="sale-tag">-25%</span>
-                                                                <div class="button">
-                                                                    <a href="/product" class="btn"><i class="lni lni-cart"></i> Add to
-                                                                        Cart</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-lg-8 col-md-8 col-12">
-                                                            <div className="product-info">
-                                                                <span className="category">Speaker</span>
-                                                                <h4 className="title">
-                                                                    <a href="/product">Big Power Sound Speaker</a>
-                                                                </h4>
-                                                                <ul className="review">
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><span>5.0 Review(s)</span></li>
-                                                                </ul>
-                                                                <div className="price">
-                                                                    <span>$275.00</span>
-                                                                    <span className="discount-price">$300.00</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <div className="col-lg-12 col-md-12 col-12">
-
-                                                <div className="single-product">
-                                                    <div className="row align-items-center">
-                                                        <div className="col-lg-4 col-md-4 col-12">
-                                                            <div className="product-image">
-                                                                <img src="assets/images/products/product-3.jpg" alt="#" />
-                                                                <div class="button">
-                                                                    <a href="/product" class="btn"><i class="lni lni-cart"></i> Add to
-                                                                        Cart</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-lg-8 col-md-8 col-12">
-                                                            <div className="product-info">
-                                                                <span className="category">Camera</span>
-                                                                <h4 className="title">
-                                                                    <a href="/product">WiFi Security Camera</a>
-                                                                </h4>
-                                                                <ul className="review">
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><span>5.0 Review(s)</span></li>
-                                                                </ul>
-                                                                <div className="price">
-                                                                    <span>$399.00</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <div className="col-lg-12 col-md-12 col-12">
-
-                                                <div className="single-product">
-                                                    <div className="row align-items-center">
-                                                        <div className="col-lg-4 col-md-4 col-12">
-                                                            <div className="product-image">
-                                                                <img src="assets/images/products/product-4.jpg" alt="#" />
-                                                                <span class="new-tag">New</span>
-                                                                <div class="button">
-                                                                    <a href="/product" class="btn"><i class="lni lni-cart"></i> Add to
-                                                                        Cart</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-lg-8 col-md-8 col-12">
-                                                            <div className="product-info">
-                                                                <span className="category">Phones</span>
-                                                                <h4 className="title">
-                                                                    <a href="/product">iphone 6x plus</a>
-                                                                </h4>
-                                                                <ul className="review">
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><span>5.0 Review(s)</span></li>
-                                                                </ul>
-                                                                <div className="price">
-                                                                    <span>$400.00</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            <div className="col-lg-12 col-md-12 col-12">
-
-                                                <div className="single-product">
-                                                    <div className="row align-items-center">
-                                                        <div className="col-lg-4 col-md-4 col-12">
-                                                            <div className="product-image">
-                                                                <img src="assets/images/products/product-7.jpg" alt="#" />
-                                                                <span class="sale-tag">-50%</span>
-                                                                <div class="button">
-                                                                    <a href="/product" class="btn"><i class="lni lni-cart"></i> Add to
-                                                                        Cart</a>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div className="col-lg-8 col-md-8 col-12">
-                                                            <div className="product-info">
-                                                                <span className="category">Headphones</span>
-                                                                <h4 className="title">
-                                                                    <a href="/product">PX7 Wireless Headphones</a>
-                                                                </h4>
-                                                                <ul className="review">
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star-filled"></i></li>
-                                                                    <li><i className="lni lni-star"></i></li>
-                                                                    <li><span>4.0 Review(s)</span></li>
-                                                                </ul>
-                                                                <div className="price">
-                                                                    <span>$100.00</span>
-                                                                    <span className="discount-price">$200.00</span>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-12">
-
-                                                <div className="pagination left">
-                                                    <ul className="pagination-list">
-                                                        <li className="active"><a href="/">1</a></li>
-                                                        <li><a href="/">2</a></li>
-                                                        <li><a href="/">3</a></li>
-                                                        <li><a href="/">4</a></li>
-                                                        <li><a href="/"><i className="lni lni-chevron-right"></i></a></li>
+                                                        <li><Link to="/">1</Link></li>
+                                                        <li className="active"><Link to="/">2</Link></li>
+                                                        <li><Link to="/">3</Link></li>
+                                                        <li><Link to="/">4</Link></li>
+                                                        <li><Link to="/"><i className="lni lni-chevron-right"></i></Link></li>
                                                     </ul>
                                                 </div>
 

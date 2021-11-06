@@ -1,17 +1,12 @@
 import React from 'react'
-import './Header.css'
-import headerLogo from '../assets/images/logo.svg'
+import '../Components/Header.css'
 import { useStateValue } from '../Context/StateProvider'
 import { Link } from 'react-router-dom';
-import HeaderCart from './HeaderCart';
 import { auth } from '../firebase';
 
-function Header() {
+function HeaderAdmin() {
     const [{ basket, user }] = useStateValue();
-    let totalPrice = 0;
-    for (let i = 0; i < basket?.length; i++) {
-        totalPrice += (basket[i].price * basket[i].quantity);
-    }
+    console.log(basket);
     const logout = () => {
         if (user) {
             auth.signOut();
@@ -60,9 +55,6 @@ function Header() {
                             <div className="col-lg-4 col-md-4 col-12">
                                 <div className="top-middle">
                                     <ul className="useful-links">
-                                        <li><Link to="/">Home</Link></li>
-                                        <li><Link to="/">About Us</Link></li>
-                                        <li><Link to="/">Contact Us</Link></li>
                                     </ul>
                                 </div>
                             </div>
@@ -106,108 +98,6 @@ function Header() {
                     </div>
                 </div>
                 {/* <!-- End Topbar --> */}
-                {/* <!-- Start Header Middle --> */}
-                <div className="header-middle">
-                    <div className="container">
-                        <div className="row align-items-center">
-                            <div className="col-lg-3 col-md-3 col-7">
-                                {/* <!-- Start Header Logo --> */}
-                                <Link className="navbar-brand" to="/">
-                                    <img src={headerLogo} alt="Logo" />
-                                </Link>
-                                {/* <!-- End Header Logo --> */}
-                            </div>
-                            <div className="col-lg-5 col-md-7 d-xs-none">
-                                {/* <!-- Start Main Menu Search --> */}
-                                <div className="main-menu-search">
-                                    {/* <!-- navbar search start --> */}
-                                    <div className="navbar-search search-style-5">
-                                        <div className="search-select">
-                                            <div className="select-position">
-                                                <select id="select1">
-                                                    <option>All</option>
-                                                    <option value="1">Categories</option>
-                                                    <option value="2">Products</option>
-                                                    <option value="3">Department</option>
-                                                    <option value="4">Manufacturers</option>
-                                                    <option value="5"> Brands</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div className="search-input">
-                                            <input type="text" placeholder="Search" />
-                                        </div>
-                                        <div className="search-btn">
-                                            <button><i className="lni lni-search-alt"></i></button>
-                                        </div>
-                                    </div>
-                                    {/* <!-- navbar search Ends --> */}
-                                </div>
-                                {/* <!-- End Main Menu Search --> */}
-                            </div>
-                            <div className="col-lg-4 col-md-2 col-5">
-                                <div className="middle-right-area">
-                                    <div className="nav-hotline">
-                                        <i className="lni lni-phone"></i>
-                                        <h3>Hotline:
-                                            <span>(+256) 700 456 789</span>
-                                        </h3>
-                                    </div>
-                                    <div className="navbar-cart">
-                                        <div className="wishlist">
-                                            <Link to="/">
-                                                <i className="lni lni-heart"></i>
-                                                <span className="total-items">0</span>
-                                            </Link>
-                                        </div>
-                                        <div className="cart-items">
-                                            <Link to="/" className="main-btn">
-                                                <i className="lni lni-cart"></i>
-                                                <span className="total-items">{basket?.length}</span>
-                                            </Link>
-                                            {/* <!-- Shopping Item --> */}
-                                            <div className="shopping-item">
-                                                <div className="dropdown-cart-header">
-                                                    <span>{basket?.length} Item(s)</span>
-                                                    <Link to="/cart">View Cart</Link>
-                                                </div>
-                                                <ul className="shopping-list">
-                                                    {
-                                                        basket?.length === 0 ? (
-                                                            <li>Your Cart is Empty</li>
-                                                        ) : (
-                                                            basket.map((item, index) => (
-                                                                <HeaderCart item={item} key={index} />
-                                                            ))
-                                                        )
-
-                                                    }
-                                                </ul>
-                                                <div className="bottom">
-                                                    <div className="total">
-                                                        <span>Total</span>
-                                                        <span className="total-amount">{
-                                                            (totalPrice).toLocaleString('en-US', {
-                                                                style: 'currency',
-                                                                currency: 'USD',
-                                                                maximumFractionDigits: 2,
-                                                            })
-                                                        }</span>
-                                                    </div>
-                                                    <div className="button">
-                                                        <Link to="/checkout" className="btn animate">Checkout</Link>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {/* <!--/ End Shopping Item --> */}
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                {/* <!-- End Header Middle --> */}
                 {/* <!-- Start Header Bottom --> */}
                 <div className="container">
                     <div className="row align-items-center">
@@ -293,9 +183,6 @@ function Header() {
                                                     <li className="nav-item"><Link to="/">Returns and Refunds</Link></li>
                                                 </ul>
                                             </li>
-                                            <li className="nav-item">
-                                                <Link to="/" aria-label="Toggle navigation">Contact Us</Link>
-                                            </li>
                                         </ul>
                                     </div>
                                     {/* <!-- navbar collapse --> */}
@@ -331,6 +218,7 @@ function Header() {
             {/* <!-- End Header Area --> */}
         </>
     )
+
 }
 
-export default Header
+export default HeaderAdmin

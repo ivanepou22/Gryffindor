@@ -19,20 +19,6 @@ function Login() {
                 alert(error.message)
             })
     }
-
-    const register = (event) => {
-        event.preventDefault(); //stops the fresh of the page
-        //firebase login logic
-        auth.createUserWithEmailAndPassword(email, password)
-            .then(auth => {
-                //Create a user in your own accessible database
-                history.push('/');
-            })
-            .catch((error) => {
-                alert(error.message)
-            })
-    }
-
     return (
         <>
             <div className="breadcrumbs">
@@ -78,11 +64,11 @@ function Login() {
                                         <span>Or</span>
                                     </div>
                                     <div className="form-group input-group">
-                                        <label for="reg-fn">Email</label>
+                                        <label htmlFor="reg-fn">Email</label>
                                         <input value={email} onChange={event => setEmail(event.target.value)} className="form-control" type="email" id="reg-email" required />
                                     </div>
                                     <div className="form-group input-group">
-                                        <label for="reg-fn">Password</label>
+                                        <label htmlFor="reg-fn">Password</label>
                                         <input value={password} onChange={event => setPassword(event.target.value)} className="form-control" type="password" id="reg-pass" required />
                                     </div>
                                     <div className="d-flex flex-wrap justify-content-between bottom-content">

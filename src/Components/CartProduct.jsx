@@ -24,7 +24,7 @@ function CartProduct({ item }) {
                         <h5 className="product-name"><Link
                             to="/"
                         >
-                            {item.title}</Link></h5>
+                            {item.name}</Link></h5>
                         <p className="product-des">
                             <span><em>Type:</em> {item.category}</span>
                             <span><em>Color:</em> Black</span>

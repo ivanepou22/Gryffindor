@@ -6,44 +6,42 @@ import product3 from '../assets/images/product-details/03.jpg'
 import product4 from '../assets/images/product-details/04.jpg'
 import product5 from '../assets/images/product-details/05.jpg'
 import { useStateValue } from '../Context/StateProvider'
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 function Product() {
     const [{ basket }, dispatch] = useStateValue();
+    console.log(basket);
     const location = useLocation();
     const product = location.state;
+    const { id } = useParams();
     let productPrice = 0;
-    const [color, setColor] = useState('');
-    const [quantity, setQuantity] = React.useState(1);
+    const [quantity, setQuantity] = useState(1);
     //set quantity
     const handleQuantity = (e) => {
         setQuantity(e.target.value);
     }
 
-    //set color
-    const handleColor = (e) => {
-        setColor(e.target.value);
-    }
     product.discount === 0 ? (
         productPrice = product.price
     ) : (
         productPrice = (product.price - (product.price * product.discount / 100))
     )
-    console.log(basket)
+    console.log(`product: ${id} ${product}`)
     const addToBasket = () => {
         //add item to the basket
         dispatch({
             type: 'ADD_TO_BASKET',
             item: {
-                id: product.id,
-                title: product.name,
+                id: id,
+                name: product.name,
                 image: product.image,
+                description: product.description,
                 price: productPrice,
                 originalPrice: product.price,
                 rating: product.rating,
                 discount: product.discount,
                 quantity: parseInt(quantity),
-                color: color,
+                color: 'black',
                 category: product.category
             }
         })
@@ -61,8 +59,8 @@ function Product() {
                         </div>
                         <div className="col-lg-6 col-md-6 col-12">
                             <ul className="breadcrumb-nav">
-                                <li><a href="index.html"><i className="lni lni-home"></i> Home</a></li>
-                                <li><a href="index.html">Shop</a></li>
+                                <li><Link to="index.html"><i className="lni lni-home"></i> Home</Link></li>
+                                <li><Link to="index.html">Shop</Link></li>
                                 <li>Single Product</li>
                             </ul>
                         </div>
@@ -95,7 +93,7 @@ function Product() {
                             <div className="col-lg-6 col-md-12 col-12">
                                 <div className="product-info">
                                     <h2 className="title">{product.name}</h2>
-                                    <p className="category"><i className="lni lni-tag"></i><a href="/">{product.category}</a></p>
+                                    <p className="category"><i className="lni lni-tag"></i><Link to="/">{product.category}</Link></p>
                                     {
                                         product.discount === 0 ? (
                                             <h3 className="price">
@@ -189,7 +187,7 @@ function Product() {
                                             </div>
                                             <div className="col-lg-4 col-md-4 col-12">
                                                 <div className="wish-button">
-                                                    <Link to="/">
+                                                    <Link to="/products">
                                                         <button className="btn"><i className="lni lni-reload"></i> Back To Shop</button>
                                                     </Link>
                                                 </div>

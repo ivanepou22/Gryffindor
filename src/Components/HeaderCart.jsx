@@ -24,9 +24,14 @@ function HeaderCart({ item }) {
                 </div>
 
                 <div className="content">
-                    <h4><Link to="/">
+                    <h4><Link
+                        to={{
+                            pathname: `/product/${item.id}`,
+                            state: item,
+                        }}
+                    >
                         {
-                            item.title
+                            item.name
                         }</Link></h4>
                     <p className="quantity">{item.quantity} - <span className="amount">
                         {

@@ -1,102 +1,21 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
-import product1 from '../assets/images/products/product-1.jpg'
-import product2 from '../assets/images/products/product-2.jpg'
-import product3 from '../assets/images/products/product-3.jpg'
-import product4 from '../assets/images/products/product-4.jpg'
-import product5 from '../assets/images/products/product-5.jpg'
-import product6 from '../assets/images/products/product-6.jpg'
-import product7 from '../assets/images/products/product-7.jpg'
-import product8 from '../assets/images/products/product-8.jpg'
+import { db } from '../firebase'
 
 function Trending() {
-    const products = [
-        {
-            id: 1,
-            name: 'Xiaomi Mi Band 5',
-            category: 'Watches',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-            price: 199.00,
-            rating: 4,
-            image: product1,
-            discount: 10
-        },
-        {
-            id: 2,
-            name: 'Big Power Sound Speaker',
-            category: 'Speaker',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-            price: 300.00,
-            rating: 5,
-            image: product2,
-            discount: 0
-        },
-        {
-            id: 3,
-            name: 'WiFi Security Camera',
-            category: 'Camera',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-            price: 399.00,
-            rating: 5,
-            image: product3,
-            discount: 0
-        }
-        ,
-        {
-            id: 4,
-            name: 'iphone 6x plus',
-            category: 'Phones',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-            price: 400.00,
-            rating: 5,
-            image: product4,
-            discount: 25
-        }
-        ,
-        {
-            id: 5,
-            name: 'Wireless Headphones',
-            category: 'Headphones',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-            price: 350.00,
-            rating: 5,
-            image: product5,
-            discount: 0
-        }
-        ,
-        {
-            id: 6,
-            name: 'Mini Bluetooth Speaker',
-            category: 'Speaker',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-            price: 70.00,
-            rating: 4,
-            image: product6,
-            discount: 0
-        }
-        ,
-        {
-            id: 7,
-            name: 'PX7 Wireless Headphones',
-            category: 'Headphones',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-            price: 200.00,
-            rating: 4,
-            image: product7,
-            discount: 0
-        },
-        {
-            id: 8,
-            name: 'Apple MacBook Air',
-            category: 'Laptop',
-            description: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod temporincididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-            price: 899.00,
-            rating: 5,
-            image: product8,
-            discount: 15
-        }
+    const [products, setProducts] = useState([]);
 
-    ]
+    //get data from firebase
+    useEffect(() => {
+        db.collection('products')
+            .onSnapshot(snapshot => {
+                setProducts(snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    product: doc.data()
+                })))
+            })
+    }, [])
+
     return (
 
         // <!-- Start Trending Product Area -->
@@ -113,8 +32,8 @@ function Trending() {
                 </div>
                 <div className="row">
                     {
-                        products.map(product => (
-                            <div className="col-lg-3 col-md-6 col-12" key={product.id}>
+                        products.slice(0, 8).map(({ id, product }) => (
+                            <div className="col-lg-3 col-md-6 col-12" key={id}>
                                 {/* <!-- Start Single Product --> */}
                                 <div className="single-product">
                                     <div className="product-image">
@@ -126,7 +45,7 @@ function Trending() {
                                         }
                                         <Link key={product.id}
                                             to={{
-                                                pathname: `/product/${product.id}`,
+                                                pathname: `/product/${id}`,
                                                 state: product,
                                             }}
                                         >
