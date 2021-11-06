@@ -1,10 +1,28 @@
 import React from 'react'
 import './Cart.css'
-import cart01 from '../assets/images/Cart/01.jpg'
-import cart02 from '../assets/images/Cart/02.jpg'
-import cart03 from '../assets/images/Cart/03.jpg'
+import { Link } from 'react-router-dom'
+import { useStateValue } from '../Context/StateProvider'
+import CartProduct from '../Components/CartProduct';
 
 function Cart() {
+    const [{ basket }] = useStateValue();
+    let orderTotal = 0;
+    let total = 0;
+    for (let i = 0; i < basket?.length; i++) {
+        const item = basket[i];
+        orderTotal = orderTotal + item.originalPrice;
+        total = total + item.price;
+    }
+
+    let delivery = 0;
+    if (total > 35) {
+        delivery = 12.99;
+    } else if (total > 15 && total <= 35) {
+        delivery = 4.99;
+    } else if (total > 0 && total <= 15) {
+        delivery = 2.99;
+    }
+
     return (
         <>
             <div className="breadcrumbs">
@@ -30,174 +48,134 @@ function Cart() {
                 <div className="container">
                     <div className="cart-list-head">
 
-                        <div className="cart-list-title">
+                        {
+                            basket?.length === 0 ? ('') : (
+                                <div className="cart-list-title">
+                                    <div className="row">
+                                        <div className="col-lg-1 col-md-1 col-12">
+                                        </div>
+                                        <div className="col-lg-2 col-md-3 col-12">
+                                            <p>Product Name</p>
+                                        </div>
+                                        <div className="col-lg-2 col-md-2 col-12">
+                                            <p>Qty</p>
+                                        </div>
+                                        <div className="col-lg-2 col-md-2 col-12">
+                                            <p>Unit Price</p>
+                                        </div>
+                                        <div className="col-lg-2 col-md-2 col-12">
+                                            <p>Discount</p>
+                                        </div>
+                                        <div className="col-lg-2 col-md-2 col-12">
+                                            <p>Subtotal</p>
+                                        </div>
+                                        <div className="col-lg-1 col-md-2 col-12">
+                                            <p>Remove</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                        {
+                            basket?.length === 0 ? (
+                                <div className="cart-single-list">
+                                    <div className="row align-items-center">
+                                        <div className="col-lg-1 col-md-1 col-12 empty-cart">
+                                            <span>Your Cart is Empty</span>
+                                        </div>
+                                    </div>
+                                </div>) : (
+                                basket.map((item, index) => (
+                                    <CartProduct item={item} key={item.id} />
+                                ))
+                            )
+
+                        }
+                    </div>
+
+                    {
+                        basket?.length === 0 ? ('') : (
                             <div className="row">
-                                <div className="col-lg-1 col-md-1 col-12">
-                                </div>
-                                <div className="col-lg-4 col-md-3 col-12">
-                                    <p>Product Name</p>
-                                </div>
-                                <div className="col-lg-2 col-md-2 col-12">
-                                    <p>Quantity</p>
-                                </div>
-                                <div className="col-lg-2 col-md-2 col-12">
-                                    <p>Unit Price</p>
-                                </div>
-                                <div className="col-lg-2 col-md-2 col-12">
-                                    <p>Subtotal</p>
-                                </div>
-                                <div className="col-lg-1 col-md-2 col-12">
-                                    <p>Remove</p>
-                                </div>
-                            </div>
-                        </div>
+                                <div className="col-12">
 
-
-                        <div className="cart-single-list">
-                            <div className="row align-items-center">
-                                <div className="col-lg-1 col-md-1 col-12">
-                                    <a href="/"><img src={cart01} alt="#" /></a>
-                                </div>
-                                <div className="col-lg-4 col-md-3 col-12">
-                                    <h5 className="product-name"><a href="product-details.html">
-                                        Canon EOS M50 Mirrorless Camera</a></h5>
-                                    <p className="product-des">
-                                        <span><em>Type:</em> Mirrorless</span>
-                                        <span><em>Color:</em> Black</span>
-                                    </p>
-                                </div>
-                                <div className="col-lg-2 col-md-2 col-12">
-                                    <div className="count-input">
-                                        <select className="form-control">
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="col-lg-2 col-md-2 col-12">
-                                    <p>$910.00</p>
-                                </div>
-                                <div className="col-lg-2 col-md-2 col-12">
-                                    <p>$910.00</p>
-                                </div>
-                                <div className="col-lg-1 col-md-2 col-12">
-                                    <a className="remove-item" href="/#"><i className="lni lni-close"></i></a>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="cart-single-list">
-                            <div className="row align-items-center">
-                                <div className="col-lg-1 col-md-1 col-12">
-                                    <a href="product-details.html"><img src={cart02} alt="#" /></a>
-                                </div>
-                                <div className="col-lg-4 col-md-3 col-12">
-                                    <h5 className="product-name"><a href="/">
-                                        Apple iPhone X 256 GB Space Gray</a></h5>
-                                    <p className="product-des">
-                                        <span><em>Memory:</em> 256 GB</span>
-                                        <span><em>Color:</em> Space Gray</span>
-                                    </p>
-                                </div>
-                                <div className="col-lg-2 col-md-2 col-12">
-                                    <div className="count-input">
-                                        <select className="form-control">
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="col-lg-2 col-md-2 col-12">
-                                    <p>$1100.00</p>
-                                </div>
-                                <div className="col-lg-2 col-md-2 col-12">
-                                    <p>$1100.00</p>
-                                </div>
-                                <div className="col-lg-1 col-md-2 col-12">
-                                    <a className="remove-item" href="/#"><i className="lni lni-close"></i></a>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div className="cart-single-list">
-                            <div className="row align-items-center">
-                                <div className="col-lg-1 col-md-1 col-12">
-                                    <a href="product-details.html"><img src={cart03} alt="#" /></a>
-                                </div>
-                                <div className="col-lg-4 col-md-3 col-12">
-                                    <h5 className="product-name"><a href="/">HP LaserJet Pro Laser Printer</a></h5>
-                                    <p className="product-des">
-                                        <span><em>Type:</em> Laser</span>
-                                        <span><em>Color:</em> White</span>
-                                    </p>
-                                </div>
-                                <div className="col-lg-2 col-md-2 col-12">
-                                    <div className="count-input">
-                                        <select className="form-control">
-                                            <option>1</option>
-                                            <option>2</option>
-                                            <option>3</option>
-                                            <option>4</option>
-                                            <option>5</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div className="col-lg-2 col-md-2 col-12">
-                                    <p>$550.00</p>
-                                </div>
-                                <div className="col-lg-2 col-md-2 col-12">
-                                    <p>$550.00</p>
-                                </div>
-                                <div className="col-lg-1 col-md-2 col-12">
-                                    <a className="remove-item" href="/#"><i className="lni lni-close"></i></a>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-                    <div className="row">
-                        <div className="col-12">
-
-                            <div className="total-amount">
-                                <div className="row">
-                                    <div className="col-lg-8 col-md-6 col-12">
-                                        <div className="left">
-                                            <div className="coupon">
-                                                <form action="#" target="_blank">
-                                                    <input name="Coupon" placeholder="Enter Your Coupon" />
-                                                    <div className="button">
-                                                        <button className="btn">Apply Coupon</button>
+                                    <div className="total-amount">
+                                        <div className="row">
+                                            <div className="col-lg-8 col-md-6 col-12">
+                                                <div className="left">
+                                                    <div className="coupon">
+                                                        <form>
+                                                            <input name="Coupon" placeholder="Enter Your Coupon" />
+                                                            <div className="button">
+                                                                <button className="btn">Apply Coupon</button>
+                                                            </div>
+                                                        </form>
                                                     </div>
-                                                </form>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-lg-4 col-md-6 col-12">
-                                        <div className="right">
-                                            <ul>
-                                                <li>Cart Subtotal<span>$2560.00</span></li>
-                                                <li>Shipping<span>Free</span></li>
-                                                <li>You Save<span>$00.00</span></li>
-                                                <li className="last">You Pay<span>$2560.00</span></li>
-                                            </ul>
-                                            <div className="button">
-                                                <a href="/checkout" className="btn">Checkout</a>
-                                                <a href="/products" className="btn btn-alt">Continue shopping</a>
+                                            <div className="col-lg-4 col-md-6 col-12">
+                                                <div className="right">
+                                                    <ul>
+                                                        <li>Cart Subtotal<span>
+                                                            {
+                                                                orderTotal.toLocaleString('en-US', {
+                                                                    style: 'currency',
+                                                                    currency: 'USD',
+                                                                    maximumFractionDigits: 2,
+                                                                })
+                                                            }
+                                                        </span></li>
+                                                        <li>Shipping<span>
+                                                            {
+                                                                basket?.length === 0 ? (
+                                                                    <p>0.00</p>
+                                                                ) : (
+                                                                    <p>
+                                                                        {
+                                                                            delivery.toLocaleString('en-US', {
+                                                                                style: 'currency',
+                                                                                currency: 'USD',
+                                                                                maximumFractionDigits: 2,
+                                                                            })
+                                                                        }
+                                                                    </p>)
+
+                                                            }
+                                                        </span></li>
+                                                        <li>You Save<span>
+                                                            {
+                                                                (orderTotal - total).toLocaleString('en-US', {
+                                                                    style: 'currency',
+                                                                    currency: 'USD',
+                                                                    maximumFractionDigits: 2,
+                                                                })
+                                                            }
+                                                        </span></li>
+                                                        <li className="last">You Pay<span>
+
+                                                            {
+                                                                basket?.length === 0 ? (
+                                                                    <p>0.00</p>
+                                                                ) : (
+                                                                    <p>{(basket.reduce((acc, item) => acc + item.price * item.quantity, 0) + delivery).toLocaleString('en-US', {
+                                                                        style: 'currency',
+                                                                        currency: 'USD',
+                                                                        maximumFractionDigits: 2,
+                                                                    })}</p>)
+                                                            }
+                                                        </span></li>
+                                                    </ul>
+                                                    <div className="button">
+                                                        <Link to="/checkout" className="btn">Checkout</Link>
+                                                        <Link to="/products" className="btn btn-alt">Continue shopping</Link>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                        </div>
-                    </div>
+                        )
+                    }
                 </div>
             </div>
         </>

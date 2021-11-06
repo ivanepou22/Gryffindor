@@ -1,7 +1,38 @@
 import React from 'react'
 import './Login.css'
+import { auth } from '../firebase'
+import { useHistory } from 'react-router';
 
 function Login() {
+    const history = useHistory()
+    const [email, setEmail] = React.useState('');
+    const [password, setPassword] = React.useState('');
+
+    const login = (event) => {
+        event.preventDefault(); //stops the fresh of the page
+        //firebase login logic
+        auth.signInWithEmailAndPassword(email, password)
+            .then((auth) => {
+                history.push('/');
+            })
+            .catch((error) => {
+                alert(error.message)
+            })
+    }
+
+    const register = (event) => {
+        event.preventDefault(); //stops the fresh of the page
+        //firebase login logic
+        auth.createUserWithEmailAndPassword(email, password)
+            .then(auth => {
+                //Create a user in your own accessible database
+                history.push('/');
+            })
+            .catch((error) => {
+                alert(error.message)
+            })
+    }
+
     return (
         <>
             <div className="breadcrumbs">
@@ -27,7 +58,7 @@ function Login() {
                 <div className="container">
                     <div className="row">
                         <div className="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-12">
-                            <form className="card login-form" method="post">
+                            <form className="card login-form">
                                 <div className="card-body">
                                     <div className="title">
                                         <h3>Login Now</h3>
@@ -48,11 +79,11 @@ function Login() {
                                     </div>
                                     <div className="form-group input-group">
                                         <label for="reg-fn">Email</label>
-                                        <input className="form-control" type="email" id="reg-email" required />
+                                        <input value={email} onChange={event => setEmail(event.target.value)} className="form-control" type="email" id="reg-email" required />
                                     </div>
                                     <div className="form-group input-group">
                                         <label for="reg-fn">Password</label>
-                                        <input className="form-control" type="password" id="reg-pass" required />
+                                        <input value={password} onChange={event => setPassword(event.target.value)} className="form-control" type="password" id="reg-pass" required />
                                     </div>
                                     <div className="d-flex flex-wrap justify-content-between bottom-content">
                                         <div className="form-check">
@@ -62,7 +93,7 @@ function Login() {
                                         <a className="lost-pass" href="/">Forgot password?</a>
                                     </div>
                                     <div className="button">
-                                        <button className="btn" type="submit">Login</button>
+                                        <button className="btn" type="submit" onClick={login}>Login</button>
                                     </div>
                                     <p className="outer-link">Don't have an account? <a href="/register">Register here </a>
                                     </p>

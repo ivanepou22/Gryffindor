@@ -10,24 +10,64 @@ import Register from "./Pages/Register";
 import Cart from "./Pages/Cart";
 import Checkout from "./Pages/Checkout";
 import Products from "./Pages/Products";
+import { useStateValue } from "./Context/StateProvider";
+import { useEffect } from "react";
+
 
 
 function App() {
+  const [{basket}, dispatch] = useStateValue();
+  console.log(basket)
+  //piece of code which runs based on a given condition
+  //useEfect hook
+  useEffect(() => {
+
+    return () => {
+
+    }
+  }, [])
+
   return (
     <div className="App">
-        <Header/>
         <Router>
           <Switch>
-            <Route exact path="/" component={Home} />
-            <Route exact path="/product" component={Product} />
-            <Route exact path="/login" component={Login} />
-            <Route exact path="/register" component={Register} />
-            <Route exact path="/cart" component={Cart} />
-            <Route exact path="/checkout" component={Checkout} />
-            <Route exact path="/products" component={Products} />
+            <Route exact path="/product/:id">
+              <Header />
+              <Product />
+              <Footer />
+            </Route>
+            <Route exact path="/login">
+              <Header/>
+              <Login />
+              <Footer />
+            </Route>
+            <Route exact path="/register">
+              <Header />
+              <Register />
+              <Footer />
+            </Route>
+            <Route exact path="/cart">
+              <Header />
+              <Cart />
+              <Footer />
+            </Route>
+            <Route exact path="/checkout">
+              <Header />
+              <Checkout />
+              <Footer />
+            </Route>
+            <Route exact path="/products">
+              <Header/>
+              <Products />
+              <Footer />
+            </Route>
+            <Route exact path="/">
+              <Header/>
+              <Home />
+              <Footer />
+            </Route>
           </Switch>
         </Router>
-        <Footer />
     </div>
   );
 }

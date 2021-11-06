@@ -1,12 +1,53 @@
-import React from 'react'
+import React, { useState } from 'react'
 import './Product.css'
 import product1 from '../assets/images/product-details/01.jpg'
 import product2 from '../assets/images/product-details/02.jpg'
 import product3 from '../assets/images/product-details/03.jpg'
 import product4 from '../assets/images/product-details/04.jpg'
 import product5 from '../assets/images/product-details/05.jpg'
+import { useStateValue } from '../Context/StateProvider'
+import { Link, useLocation } from "react-router-dom";
 
 function Product() {
+    const [{ basket }, dispatch] = useStateValue();
+    const location = useLocation();
+    const product = location.state;
+    let productPrice = 0;
+    const [color, setColor] = useState('');
+    const [quantity, setQuantity] = React.useState(1);
+    //set quantity
+    const handleQuantity = (e) => {
+        setQuantity(e.target.value);
+    }
+
+    //set color
+    const handleColor = (e) => {
+        setColor(e.target.value);
+    }
+    product.discount === 0 ? (
+        productPrice = product.price
+    ) : (
+        productPrice = (product.price - (product.price * product.discount / 100))
+    )
+    console.log(basket)
+    const addToBasket = () => {
+        //add item to the basket
+        dispatch({
+            type: 'ADD_TO_BASKET',
+            item: {
+                id: product.id,
+                title: product.name,
+                image: product.image,
+                price: productPrice,
+                originalPrice: product.price,
+                rating: product.rating,
+                discount: product.discount,
+                quantity: parseInt(quantity),
+                color: color,
+                category: product.category
+            }
+        })
+    }
     return (
         <>
             {/* <!-- Start Breadcrumbs --> */}
@@ -39,7 +80,7 @@ function Product() {
                                 <div className="product-images">
                                     <main id="gallery">
                                         <div className="main-img">
-                                            <img src={product1} id="current" alt="#" />
+                                            <img src={product.image} id="current" alt="#" />
                                         </div>
                                         <div className="images">
                                             <img src={product1} className="img" alt="#" />
@@ -53,39 +94,68 @@ function Product() {
                             </div>
                             <div className="col-lg-6 col-md-12 col-12">
                                 <div className="product-info">
-                                    <h2 className="title">GoPro Karma Camera Drone</h2>
-                                    <p className="category"><i className="lni lni-tag"></i> Drones: <a href="/">Action
-                                        cameras</a></p>
-                                    <h3 className="price">$850<span>$945</span></h3>
-                                    <p className="info-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                        tempor incididunt
-                                        ut labore et dolore magna aliqua.</p>
+                                    <h2 className="title">{product.name}</h2>
+                                    <p className="category"><i className="lni lni-tag"></i><a href="/">{product.category}</a></p>
+                                    {
+                                        product.discount === 0 ? (
+                                            <h3 className="price">
+                                                {
+                                                    product.price.toLocaleString('en-US', {
+                                                        style: 'currency',
+                                                        currency: 'USD',
+                                                        maximumFractionDigits: 2,
+                                                    })
+                                                }
+                                            </h3>
+                                        ) :
+                                            (
+                                                <h3 className="price">
+                                                    {
+                                                        (product.price - (product.price * product.discount / 100)).toLocaleString('en-US', {
+                                                            style: 'currency',
+                                                            currency: 'USD',
+                                                            maximumFractionDigits: 2,
+                                                        })
+                                                    }
+                                                    <span>
+                                                        {
+                                                            product.price.toLocaleString('en-US', {
+                                                                style: 'currency',
+                                                                currency: 'USD',
+                                                                maximumFractionDigits: 2,
+                                                            })
+                                                        }
+                                                    </span>
+                                                </h3>
+                                            )
+                                    }
+                                    <p className="info-text">{product.description}</p>
                                     <div className="row">
                                         <div className="col-lg-4 col-md-4 col-12">
                                             <div className="form-group color-option">
-                                                <label className="title-label" for="size">Choose color</label>
+                                                <p className="title-label">Choose color</p>
                                                 <div className="single-checkbox checkbox-style-1">
-                                                    <input type="checkbox" id="checkbox-1" checked />
-                                                    <label for="checkbox-1"><span></span></label>
+                                                    <input type="checkbox" id="checkbox-1" />
+                                                    <label htmlFor="checkbox-1"><span></span></label>
                                                 </div>
                                                 <div className="single-checkbox checkbox-style-2">
                                                     <input type="checkbox" id="checkbox-2" />
-                                                    <label for="checkbox-2"><span></span></label>
+                                                    <label htmlFor="checkbox-2"><span></span></label>
                                                 </div>
                                                 <div className="single-checkbox checkbox-style-3">
                                                     <input type="checkbox" id="checkbox-3" />
-                                                    <label for="checkbox-3"><span></span></label>
+                                                    <label htmlFor="checkbox-3"><span></span></label>
                                                 </div>
                                                 <div className="single-checkbox checkbox-style-4">
                                                     <input type="checkbox" id="checkbox-4" />
-                                                    <label for="checkbox-4"><span></span></label>
+                                                    <label htmlFor="checkbox-4"><span></span></label>
                                                 </div>
                                             </div>
                                         </div>
                                         <div className="col-lg-4 col-md-4 col-12">
                                             <div className="form-group">
-                                                <label for="color">Battery capacity</label>
-                                                <select className="form-control" id="color">
+                                                <label htmlFor="capacity">Battery capacity</label>
+                                                <select className="form-control" id="capacity">
                                                     <option>5100 mAh</option>
                                                     <option>6200 mAh</option>
                                                     <option>8000 mAh</option>
@@ -94,18 +164,18 @@ function Product() {
                                         </div>
                                         <div className="col-lg-4 col-md-4 col-12">
                                             <div className="form-group quantity">
-                                                <label for="color">Quantity</label>
-                                                <select className="form-control">
-                                                    <option>1</option>
-                                                    <option>2</option>
-                                                    <option>3</option>
-                                                    <option>4</option>
-                                                    <option>5</option>
-                                                    <option>6</option>
-                                                    <option>7</option>
-                                                    <option>8</option>
-                                                    <option>9</option>
-                                                    <option>10</option>
+                                                <label htmlFor="quantity">Quantity</label>
+                                                <select className="form-control" id="quantity" onChange={handleQuantity}>
+                                                    <option value={1}>1</option>
+                                                    <option value={2}>2</option>
+                                                    <option value={3}>3</option>
+                                                    <option value={4}>4</option>
+                                                    <option value={5}>5</option>
+                                                    <option value={6}>6</option>
+                                                    <option value={7}>7</option>
+                                                    <option value={8}>8</option>
+                                                    <option value={9}>9</option>
+                                                    <option value={10}>10</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -114,12 +184,14 @@ function Product() {
                                         <div className="row align-items-end">
                                             <div className="col-lg-4 col-md-4 col-12">
                                                 <div className="button cart-button">
-                                                    <button className="btn" style={{ width: `100%` }}>Add to Cart</button>
+                                                    <button className="btn" style={{ width: `100%` }} onClick={addToBasket} >Add to Cart</button>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4 col-12">
                                                 <div className="wish-button">
-                                                    <button className="btn"><i className="lni lni-reload"></i> Compare</button>
+                                                    <Link to="/">
+                                                        <button className="btn"><i className="lni lni-reload"></i> Back To Shop</button>
+                                                    </Link>
                                                 </div>
                                             </div>
                                             <div className="col-lg-4 col-md-4 col-12">
@@ -133,7 +205,7 @@ function Product() {
                             </div>
                         </div>
                     </div>
-                    <div className="product-details-info">
+                    {/* <div className="product-details-info">////////////////////////
                         <div className="single-block">
                             <div className="row">
                                 <div className="col-lg-6 col-12">
@@ -174,7 +246,7 @@ function Product() {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </section>
             {/* <!-- End Item Details --> */}

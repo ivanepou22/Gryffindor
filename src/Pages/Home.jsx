@@ -10,17 +10,10 @@ import './Home.css'
 function Home() {
     return (
         <>
-            {/* Hero Area */}
             <Heros />
-            {/* Feature Categories */}
             <Categories />
-            {/* Trending Items */}
             <Trending />
-            {/* Banner Section */}
-            {/* <Banner /> */}
-            {/* seller */}
             <Seller />
-            {/* Support */}
             <Support />
         </>
     )

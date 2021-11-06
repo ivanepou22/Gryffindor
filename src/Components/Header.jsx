@@ -1,10 +1,19 @@
 import React from 'react'
 import './Header.css'
-import item1 from '../assets/images/header/cart-items/item1.jpg'
-import item2 from '../assets/images/header/cart-items/item2.jpg'
 import headerLogo from '../assets/images/logo.svg'
+import { useStateValue } from '../Context/StateProvider'
+import { Link } from 'react-router-dom';
+import HeaderCart from './HeaderCart';
+import { getBasketTotal } from '../Context/reducer';
 
 function Header() {
+    const [{ basket }] = useStateValue();
+    console.log(basket)
+    let totalPrice = 0;
+    for (let i = 0; i < basket?.length; i++) {
+        totalPrice += (basket[i].price * basket[i].quantity);
+    }
+
     return (
         <>
             {/* <!-- Start Header Area --> */}
@@ -19,20 +28,20 @@ function Header() {
                                         <li>
                                             <div className="select-position">
                                                 <select id="select4">
-                                                    <option value="0" selected>UGX UGSHS</option>
-                                                    <option value="0">$ USD</option>
-                                                    <option value="1">€ EURO</option>
-                                                    <option value="2">$ CAD</option>
-                                                    <option value="3">₹ INR</option>
-                                                    <option value="4">¥ CNY</option>
-                                                    <option value="5">৳ BDT</option>
+                                                    <option value="UGX">UGX UGSHS</option>
+                                                    <option value="USD">$ USD</option>
+                                                    <option value="EURO">€ EURO</option>
+                                                    <option value="CAD">$ CAD</option>
+                                                    <option value="INR">₹ INR</option>
+                                                    <option value="CNY">¥ CNY</option>
+                                                    <option value="BDT">৳ BDT</option>
                                                 </select>
                                             </div>
                                         </li>
                                         <li>
                                             <div className="select-position">
                                                 <select id="select5">
-                                                    <option value="0" selected>English</option>
+                                                    <option value="0">English</option>
                                                     <option value="1">Español</option>
                                                     <option value="2">Filipino</option>
                                                     <option value="3">Français</option>
@@ -48,9 +57,9 @@ function Header() {
                             <div className="col-lg-4 col-md-4 col-12">
                                 <div className="top-middle">
                                     <ul className="useful-links">
-                                        <li><a href="/">Home</a></li>
-                                        <li><a href="/">About Us</a></li>
-                                        <li><a href="/">Contact Us</a></li>
+                                        <li><Link to="/">Home</Link></li>
+                                        <li><Link to="/">About Us</Link></li>
+                                        <li><Link to="/">Contact Us</Link></li>
                                     </ul>
                                 </div>
                             </div>
@@ -62,10 +71,10 @@ function Header() {
                                     </div>
                                     <ul className="user-login">
                                         <li>
-                                            <a href="/login">Sign In</a>
+                                            <Link to="/login">Sign In</Link>
                                         </li>
                                         <li>
-                                            <a href="/register">Register</a>
+                                            <Link to="/register">Register</Link>
                                         </li>
                                     </ul>
                                 </div>
@@ -80,9 +89,9 @@ function Header() {
                         <div className="row align-items-center">
                             <div className="col-lg-3 col-md-3 col-7">
                                 {/* <!-- Start Header Logo --> */}
-                                <a className="navbar-brand" href="/">
+                                <Link className="navbar-brand" to="/">
                                     <img src={headerLogo} alt="Logo" />
-                                </a>
+                                </Link>
                                 {/* <!-- End Header Logo --> */}
                             </div>
                             <div className="col-lg-5 col-md-7 d-xs-none">
@@ -93,12 +102,12 @@ function Header() {
                                         <div className="search-select">
                                             <div className="select-position">
                                                 <select id="select1">
-                                                    <option selected>All</option>
-                                                    <option value="1">option 01</option>
-                                                    <option value="2">option 02</option>
-                                                    <option value="3">option 03</option>
-                                                    <option value="4">option 04</option>
-                                                    <option value="5">option 05</option>
+                                                    <option>All</option>
+                                                    <option value="1">Categories</option>
+                                                    <option value="2">Products</option>
+                                                    <option value="3">Department</option>
+                                                    <option value="4">Manufacturers</option>
+                                                    <option value="5"> Brands</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -123,57 +132,47 @@ function Header() {
                                     </div>
                                     <div className="navbar-cart">
                                         <div className="wishlist">
-                                            <a href="/">
+                                            <Link to="/">
                                                 <i className="lni lni-heart"></i>
                                                 <span className="total-items">0</span>
-                                            </a>
+                                            </Link>
                                         </div>
                                         <div className="cart-items">
-                                            <a href="/" className="main-btn">
+                                            <Link to="/" className="main-btn">
                                                 <i className="lni lni-cart"></i>
-                                                <span className="total-items">2</span>
-                                            </a>
+                                                <span className="total-items">{basket?.length}</span>
+                                            </Link>
                                             {/* <!-- Shopping Item --> */}
                                             <div className="shopping-item">
                                                 <div className="dropdown-cart-header">
-                                                    <span>2 Items</span>
-                                                    <a href="/cart">View Cart</a>
+                                                    <span>{basket?.length} Item(s)</span>
+                                                    <Link to="/cart">View Cart</Link>
                                                 </div>
                                                 <ul className="shopping-list">
-                                                    <li>
-                                                        <a href="/" className="remove" title="Remove this item"><i
-                                                            className="lni lni-close"></i></a>
-                                                        <div className="cart-img-head">
-                                                            <a className="cart-img" href="/"><img
-                                                                src={item1} alt="#" /></a>
-                                                        </div>
+                                                    {
+                                                        basket?.length === 0 ? (
+                                                            <li>Your Cart is Empty</li>
+                                                        ) : (
+                                                            basket.map((item, index) => (
+                                                                <HeaderCart item={item} key={index} />
+                                                            ))
+                                                        )
 
-                                                        <div className="content">
-                                                            <h4><a href="/">
-                                                                Apple Watch Series 6</a></h4>
-                                                            <p className="quantity">1x - <span className="amount">$99.00</span></p>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <a href="/" className="remove" title="Remove this item"><i
-                                                            className="lni lni-close"></i></a>
-                                                        <div className="cart-img-head">
-                                                            <a className="cart-img" href="/">
-                                                                <img src={item2} alt="#" /></a>
-                                                        </div>
-                                                        <div className="content">
-                                                            <h4><a href="/">Wi-Fi Smart Camera</a></h4>
-                                                            <p className="quantity">1x - <span className="amount">$35.00</span></p>
-                                                        </div>
-                                                    </li>
+                                                    }
                                                 </ul>
                                                 <div className="bottom">
                                                     <div className="total">
                                                         <span>Total</span>
-                                                        <span className="total-amount">$134.00</span>
+                                                        <span className="total-amount">{
+                                                            (totalPrice).toLocaleString('en-US', {
+                                                                style: 'currency',
+                                                                currency: 'USD',
+                                                                maximumFractionDigits: 2,
+                                                            })
+                                                        }</span>
                                                     </div>
                                                     <div className="button">
-                                                        <a href="/checkout" className="btn animate">Checkout</a>
+                                                        <Link to="/checkout" className="btn animate">Checkout</Link>
                                                     </div>
                                                 </div>
                                             </div>
@@ -195,31 +194,31 @@ function Header() {
                                 <div className="mega-category-menu">
                                     <span className="cat-button"><i className="lni lni-menu"></i> All Categories</span>
                                     <ul className="sub-category">
-                                        <li><a href="/">Electronics <i className="lni lni-chevron-right"></i></a>
+                                        <li><Link to="/">Electronics <i className="lni lni-chevron-right"></i></Link>
                                             <ul className="inner-sub-category">
-                                                <li><a href="/">Digital Cameras</a></li>
-                                                <li><a href="/">Camcorders</a></li>
-                                                <li><a href="/">Camera Drones</a></li>
-                                                <li><a href="/">Smart Watches</a></li>
-                                                <li><a href="/">Headphones</a></li>
-                                                <li><a href="/">MP3 Players</a></li>
-                                                <li><a href="/">Microphones</a></li>
-                                                <li><a href="/">Chargers</a></li>
-                                                <li><a href="/">Batteries</a></li>
-                                                <li><a href="/">Cables & Adapters</a></li>
+                                                <li><Link to="/">Digital Cameras</Link></li>
+                                                <li><Link to="/">Camcorders</Link></li>
+                                                <li><Link to="/">Camera Drones</Link></li>
+                                                <li><Link to="/">Smart Watches</Link></li>
+                                                <li><Link to="/">Headphones</Link></li>
+                                                <li><Link to="/">MP3 Players</Link></li>
+                                                <li><Link to="/">Microphones</Link></li>
+                                                <li><Link to="/">Chargers</Link></li>
+                                                <li><Link to="/">Batteries</Link></li>
+                                                <li><Link to="/">Cables & Adapters</Link></li>
                                             </ul>
                                         </li>
-                                        <li><a href="/">accessories</a></li>
-                                        <li><a href="/">Televisions</a></li>
-                                        <li><a href="/">best selling</a></li>
-                                        <li><a href="/">top 100 offer</a></li>
-                                        <li><a href="/">sunglass</a></li>
-                                        <li><a href="/">watch</a></li>
-                                        <li><a href="/">man’s product</a></li>
-                                        <li><a href="/">Home Audio & Theater</a></li>
-                                        <li><a href="/">Computers & Tablets </a></li>
-                                        <li><a href="/">Video Games </a></li>
-                                        <li><a href="/">Home Appliances </a></li>
+                                        <li><Link to="/">accessories</Link></li>
+                                        <li><Link to="/">Televisions</Link></li>
+                                        <li><Link to="/">best selling</Link></li>
+                                        <li><Link to="/">top 100 offer</Link></li>
+                                        <li><Link to="/">sunglass</Link></li>
+                                        <li><Link to="/">watch</Link></li>
+                                        <li><Link to="/">man’s product</Link></li>
+                                        <li><Link to="/">Home Audio & Theater</Link></li>
+                                        <li><Link to="/">Computers & Tablets </Link></li>
+                                        <li><Link to="/">Video Games </Link></li>
+                                        <li><Link to="/">Home Appliances </Link></li>
                                     </ul>
                                 </div>
                                 {/* <!-- End Mega Category Menu --> */}
@@ -235,44 +234,44 @@ function Header() {
                                     <div className="collapse navbar-collapse sub-menu-bar" id="navbarSupportedContent">
                                         <ul id="nav" className="navbar-nav ms-auto">
                                             <li className="nav-item">
-                                                <a href="/" className="active" aria-label="Toggle navigation">Home</a>
+                                                <Link to="/" className="active" aria-label="Toggle navigation">Home</Link>
                                             </li>
                                             <li className="nav-item">
-                                                <a className="dd-menu collapsed" href="/" data-bs-toggle="collapse"
+                                                <Link className="dd-menu collapsed" to="/" data-bs-toggle="collapse"
                                                     data-bs-target="#submenu-1-2" aria-controls="navbarSupportedContent"
-                                                    aria-expanded="false" aria-label="Toggle navigation">Account</a>
+                                                    aria-expanded="false" aria-label="Toggle navigation">Account</Link>
                                                 <ul className="sub-menu collapse" id="submenu-1-2">
-                                                    <li className="nav-item"><a href="/">My Account</a></li>
-                                                    <li className="nav-item"><a href="/">Inbox</a></li>
-                                                    <li className="nav-item"><a href="/">Orders</a></li>
-                                                    <li className="nav-item"><a href="/">Credit Details</a></li>
-                                                    <li className="nav-item"><a href="/">Saved Items</a></li>
+                                                    <li className="nav-item"><Link to="/">My Account</Link></li>
+                                                    <li className="nav-item"><Link to="/">Inbox</Link></li>
+                                                    <li className="nav-item"><Link to="/">Orders</Link></li>
+                                                    <li className="nav-item"><Link to="/">Credit Details</Link></li>
+                                                    <li className="nav-item"><Link to="/">Saved Items</Link></li>
                                                 </ul>
                                             </li>
                                             <li className="nav-item">
-                                                <a className="dd-menu collapsed" href="/" data-bs-toggle="collapse"
+                                                <Link className="dd-menu collapsed" to="/" data-bs-toggle="collapse"
                                                     data-bs-target="#submenu-1-3" aria-controls="navbarSupportedContent"
-                                                    aria-expanded="false" aria-label="Toggle navigation">Shop</a>
+                                                    aria-expanded="false" aria-label="Toggle navigation">Shop</Link>
                                                 <ul className="sub-menu collapse" id="submenu-1-3">
-                                                    <li className="nav-item"><a href="/products">Products</a></li>
-                                                    <li className="nav-item"><a href="/wishlist">Wish List</a></li>
-                                                    <li className="nav-item"><a href="/cart">Cart</a></li>
+                                                    <li className="nav-item"><Link to="/products">Products</Link></li>
+                                                    <li className="nav-item"><Link to="/wishlist">Wish List</Link></li>
+                                                    <li className="nav-item"><Link to="/cart">Cart</Link></li>
                                                 </ul>
                                             </li>
                                             <li className="nav-item">
-                                                <a className="dd-menu collapsed" href="/" data-bs-toggle="collapse"
+                                                <Link className="dd-menu collapsed" to="/" data-bs-toggle="collapse"
                                                     data-bs-target="#submenu-1-4" aria-controls="navbarSupportedContent"
-                                                    aria-expanded="false" aria-label="Toggle navigation">Help</a>
+                                                    aria-expanded="false" aria-label="Toggle navigation">Help</Link>
                                                 <ul className="sub-menu collapse" id="submenu-1-4">
-                                                    <li className="nav-item"><a href="/">Help Center</a></li>
-                                                    <li className="nav-item"><a href="/">Place & Track Order</a></li>
-                                                    <li className="nav-item"><a href="/">Order Cancellation</a></li>
-                                                    <li className="nav-item"><a href="/">Payment</a></li>
-                                                    <li className="nav-item"><a href="/">Returns and Refunds</a></li>
+                                                    <li className="nav-item"><Link to="/">Help Center</Link></li>
+                                                    <li className="nav-item"><Link to="/">Place & Track Order</Link></li>
+                                                    <li className="nav-item"><Link to="/">Order Cancellation</Link></li>
+                                                    <li className="nav-item"><Link to="/">Payment</Link></li>
+                                                    <li className="nav-item"><Link to="/">Returns and Refunds</Link></li>
                                                 </ul>
                                             </li>
                                             <li className="nav-item">
-                                                <a href="/" aria-label="Toggle navigation">Contact Us</a>
+                                                <Link to="/" aria-label="Toggle navigation">Contact Us</Link>
                                             </li>
                                         </ul>
                                     </div>
@@ -287,16 +286,16 @@ function Header() {
                                 <h5 className="title">Follow Us:</h5>
                                 <ul>
                                     <li>
-                                        <a href="/"><i className="lni lni-facebook-filled"></i></a>
+                                        <Link to="/"><i className="lni lni-facebook-filled"></i></Link>
                                     </li>
                                     <li>
-                                        <a href="/"><i className="lni lni-twitter-original"></i></a>
+                                        <Link to="/"><i className="lni lni-twitter-original"></i></Link>
                                     </li>
                                     <li>
-                                        <a href="/"><i className="lni lni-instagram"></i></a>
+                                        <Link to="/"><i className="lni lni-instagram"></i></Link>
                                     </li>
                                     <li>
-                                        <a href="/"><i className="lni lni-skype"></i></a>
+                                        <Link to="/"><i className="lni lni-skype"></i></Link>
                                     </li>
                                 </ul>
                             </div>

@@ -1,7 +1,10 @@
 import React from 'react'
+import { useStateValue } from '../Context/StateProvider'
 import './Checkout.css'
 
 function Checkout() {
+    const [{ basket }] = useStateValue();
+    console.log(basket);
     return (
         <>
             <div className="breadcrumbs">
