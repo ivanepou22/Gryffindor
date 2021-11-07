@@ -2,9 +2,11 @@ import React from 'react'
 import './Dasboard.css'
 import { db } from '../firebase'
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom';
 
 function Dasboard() {
     const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
     //get data from firebase
     useEffect(() => {
         db.collection('products')
@@ -15,6 +17,18 @@ function Dasboard() {
                 })))
             })
     }, [])
+
+    //categories
+    useEffect(() => {
+        db.collection('categories')
+            .onSnapshot(snapshot => {
+                setCategories(snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    category: doc.data()
+                })))
+            })
+    }, [])
+
     return (
         <>
             <section class="trending-product section">
@@ -37,17 +51,19 @@ function Dasboard() {
                         </div>
                         <div class="col-lg-3 col-md-6 col-12">
                             <div class="single-product">
-                                <div class="product-info">
-                                    <span class="category">Products</span>
-                                    <h4 class="title">
-                                        <hr />
-                                    </h4>
-                                    <div class="price">
-                                        <span>
-                                            {products?.length.toFixed(2)}
-                                        </span>
+                                <Link to="/admin/products" className="title-container">
+                                    <div class="product-info">
+                                        <span class="category">Products</span>
+                                        <h4 class="title">
+                                            <hr />
+                                        </h4>
+                                        <div class="price">
+                                            <span>
+                                                {products?.length.toFixed(2)}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
 
@@ -64,17 +80,22 @@ function Dasboard() {
                                 </div>
                             </div>
                         </div>
+
                         <div class="col-lg-3 col-md-6 col-12">
                             <div class="single-product inbox-card">
-                                <div class="product-info inbox-card">
-                                    <span class="category">Categories</span>
-                                    <h4 class="title">
-                                        <hr />
-                                    </h4>
-                                    <div class="price">
-                                        <span className="inbox">00.00</span>
+                                <Link to="/admin/categories" className="title-container">
+                                    <div class="product-info inbox-card">
+                                        <span class="category">Categories</span>
+                                        <h4 class="title">
+                                            <hr />
+                                        </h4>
+                                        <div class="price">
+                                            <span className="inbox">
+                                                {categories?.length.toFixed(2)}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
                     </div>
