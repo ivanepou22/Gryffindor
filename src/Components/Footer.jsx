@@ -7,7 +7,7 @@ function Footer() {
     return (
         <>
             {/* <!-- Start Footer Area --> */}
-            <footer className="footer">
+            <footer className="footer site-footer">
                 {/* <!-- Start Footer Top --> */}
                 <div className="footer-top">
                     <div className="container">

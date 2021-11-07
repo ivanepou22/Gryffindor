@@ -1,10 +1,14 @@
 import React from 'react'
+import { useStateValue } from '../Context/StateProvider';
+import './Admin.css'
+import Dasboard from './Dasboard'
 
 function Admin() {
+
     return (
-        <>
-            <h1>Admin</h1>
-        </>
+        <div className="admin-container">
+            <Dasboard />
+        </div>
     )
 }
 

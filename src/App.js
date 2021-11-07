@@ -15,11 +15,15 @@ import { useEffect } from "react";
 import { auth } from "./firebase";
 import HeaderAdmin from "./Admin/HeaderAdmin";
 import Admin from "./Admin/Admin";
-
-
+import LoginAdmin from "./Admin/LoginAdmin";
+import Registeradmin from "./Admin/Registeradmin";
+import ProductList from "./Admin/ProductList";
+import CreateProduct from "./Admin/CreateProduct";
+import CreateCategory from "./Admin/CreateCategory";
+import CategoryList from "./Admin/CategoryList";
 
 function App() {
-  const [{user}, dispatch] = useStateValue();
+  const [{user, admin}, dispatch] = useStateValue();
   //piece of code which runs based on a given condition
   //useEfect hook
   useEffect(() => {
@@ -45,7 +49,30 @@ function App() {
 
   }, [])
 
+  useEffect(() => {
+    const unsubscribeadmin = auth.onAuthStateChanged((adminUser) => {
+      if(adminUser) {
+        //user is logged in
+        dispatch({
+          type: 'SET_ADMIN',
+          admin: adminUser
+        })
+      } else {
+        //user is logged out
+        dispatch({
+          type: 'SET_ADMIN',
+          admin: null
+        })
+      }
+    })
+    return () => {
+      unsubscribeadmin();
+    }
+  }, [])
+
+
   console.log(`user is: ${user}`)
+  console.log(`admin is: ${admin}`)
 
   return (
     <div className="App">
@@ -84,7 +111,31 @@ function App() {
             <Route exact path="/admin">
                 <HeaderAdmin />
                 <Admin />
-                <Footer />
+            </Route>
+
+            <Route exact path="/admin/login">
+              <HeaderAdmin />
+              <LoginAdmin />
+            </Route>
+            <Route exact path="/admin/register">
+              <HeaderAdmin />
+              <Registeradmin />
+            </Route>
+            <Route exact path="/admin/products">
+              <HeaderAdmin />
+              <ProductList />
+            </Route>
+            <Route exact path="/admin/createproduct">
+              <HeaderAdmin />
+              <CreateProduct />
+            </Route>
+            <Route exact path="/admin/categories">
+              <HeaderAdmin />
+              <CategoryList />
+            </Route>
+            <Route exact path="/admin/createcategories">
+              <HeaderAdmin />
+              <CreateCategory />
             </Route>
             <Route exact path="/">
               <Header/>

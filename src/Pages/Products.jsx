@@ -3,9 +3,6 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../firebase'
 import './Products.css'
-import prod1 from '../assets/images/products/product-1.jpg'
-import prod2 from '../assets/images/products/product-6.jpg'
-import prod3 from '../assets/images/products/product-7.jpg'
 
 function Products() {
     const [products, setProducts] = useState([]);
