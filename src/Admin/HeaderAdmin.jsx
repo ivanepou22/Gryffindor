@@ -174,7 +174,7 @@ function HeaderAdmin() {
                                                         <ul className="sub-menu collapse" id="submenu-1-3">
                                                             <li className="nav-item"><Link to="/admin/products">Products</Link></li>
                                                             <li className="nav-item"><Link to="/admin/categories">Categories</Link></li>
-                                                            <li className="nav-item"><Link to="/admin">Orders</Link></li>
+                                                            <li className="nav-item"><Link to="/admin/orders">Orders</Link></li>
                                                             <li className="nav-item"><Link to="/admin">Users</Link></li>
                                                         </ul>
                                                     </li>

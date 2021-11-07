@@ -5,16 +5,25 @@ import { useStateValue } from '../Context/StateProvider'
 import { Link } from 'react-router-dom';
 import HeaderCart from './HeaderCart';
 import { auth } from '../firebase';
+import { useHistory } from 'react-router';
+import HeaderWish from './HeaderWish';
 
 function Header() {
-    const [{ basket, user }] = useStateValue();
+    const history = useHistory()
+    const [{ basket, user, wishlist }] = useStateValue();
     let totalPrice = 0;
+    let totalwish = 0;
     for (let i = 0; i < basket?.length; i++) {
         totalPrice += (basket[i].price * basket[i].quantity);
+    }
+    for (let i = 0; i < wishlist?.length; i++) {
+        totalwish += (wishlist[i].price * wishlist[i].quantity);
     }
     const logout = () => {
         if (user) {
             auth.signOut();
+            //redirect to homepage
+            history.push('/')
         }
     }
     return (
@@ -154,12 +163,45 @@ function Header() {
                                         </h3>
                                     </div>
                                     <div className="navbar-cart">
-                                        <div className="wishlist">
-                                            <Link to="/">
+                                        <div className="cart-items cart-wish">
+                                            <Link to="/" className="main-btn">
                                                 <i className="lni lni-heart"></i>
-                                                <span className="total-items">0</span>
+                                                <span className="total-items">{wishlist?.length}</span>
                                             </Link>
+                                            {/* <!-- Shopping Item --> */}
+                                            <div className="shopping-item">
+                                                <div className="dropdown-cart-header">
+                                                    <span>{wishlist?.length} Item(s)</span>
+                                                    <Link to="/wishlist">View Wish List</Link>
+                                                </div>
+                                                <ul className="shopping-list">
+                                                    {
+                                                        wishlist?.length === 0 ? (
+                                                            <li>Your Wish List is Empty</li>
+                                                        ) : (
+                                                            wishlist.map((item, index) => (
+                                                                <HeaderWish wish={item} key={index} />
+                                                            ))
+                                                        )
+
+                                                    }
+                                                </ul>
+                                                <div className="bottom">
+                                                    <div className="total">
+                                                        <span>Total</span>
+                                                        <span className="total-amount">{
+                                                            (totalwish).toLocaleString('en-US', {
+                                                                style: 'currency',
+                                                                currency: 'USD',
+                                                                maximumFractionDigits: 2,
+                                                            })
+                                                        }</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {/* <!--/ End Shopping Item --> */}
                                         </div>
+
                                         <div className="cart-items">
                                             <Link to="/" className="main-btn">
                                                 <i className="lni lni-cart"></i>
@@ -195,7 +237,14 @@ function Header() {
                                                         }</span>
                                                     </div>
                                                     <div className="button">
-                                                        <Link to="/checkout" className="btn animate">Checkout</Link>
+                                                        {
+                                                            user ? (
+                                                                <Link to="/checkout" className="btn animate">Checkout</Link>
+                                                            ) : (
+                                                                <Link to="/login" className="btn animage">Login to Checkout</Link>
+                                                            )
+                                                        }
+
                                                     </div>
                                                 </div>
                                             </div>
@@ -264,11 +313,21 @@ function Header() {
                                                     data-bs-target="#submenu-1-2" aria-controls="navbarSupportedContent"
                                                     aria-expanded="false" aria-label="Toggle navigation">Account</Link>
                                                 <ul className="sub-menu collapse" id="submenu-1-2">
-                                                    <li className="nav-item"><Link to="/">My Account</Link></li>
-                                                    <li className="nav-item"><Link to="/">Inbox</Link></li>
-                                                    <li className="nav-item"><Link to="/">Orders</Link></li>
-                                                    <li className="nav-item"><Link to="/">Credit Details</Link></li>
-                                                    <li className="nav-item"><Link to="/">Saved Items</Link></li>
+                                                    {
+                                                        user ? (
+                                                            <>
+                                                                <li className="nav-item"><Link to="/">My Account</Link></li>
+                                                                <li className="nav-item"><Link to="/">Inbox</Link></li>
+                                                                <li className="nav-item"><Link to="/orders">Orders</Link></li>
+                                                                <li className="nav-item"><Link to="/">Credit Details</Link></li>
+                                                                <li className="nav-item"><Link to="/">Saved Items</Link></li>
+                                                                <li className="nav-item logout-link" onClick={logout}>Logout</li>
+                                                            </>
+                                                        ) :
+                                                            (
+                                                                <li className="nav-item"><Link to="/login">Login</Link></li>
+                                                            )
+                                                    }
                                                 </ul>
                                             </li>
                                             <li className="nav-item">

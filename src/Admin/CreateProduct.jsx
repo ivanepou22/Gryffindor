@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import './CreateProduct.css'
 import { storage, db } from "../firebase";
@@ -15,48 +15,58 @@ function CreateProduct() {
     const [progress, setProgress] = useState(0);
     const [details, setDetails] = useState('');
     const [{ admin }] = useStateValue();
+    const [categories, setCategories] = useState([]);
+    const [error, setError] = useState('');
 
 
     const handleUpload = (event) => {
         event.preventDefault();
-        const uploadTask = storage.ref(`images/${image.name}`).put(image);
-        uploadTask.on('state_changed',
-            (snapshot) => {
-                // progrss function ....
-                const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
-                setProgress(progress);
-            },
-            (error) => {
-                // error function ....
-                console.log(error);
-            },
-            () => {
-                // complete function ....
-                storage.ref('images').child(image.name).getDownloadURL().then(url => {
-                    db.collection('products').add({
-                        timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-                        name: name,
-                        quantity: parseInt(quantity),
-                        rating: parseInt(rating),
-                        price: parseInt(price),
-                        category: category,
-                        image: url,
-                        discount: 0,
-                        description: details,
-                        username: admin.email
-                    });
-                    setCategory('');
-                    setQuantity(0);
-                    setName('');
-                    setPrice(0);
-                    setRating(0);
-                    setImage(null);
-                    setDetails('');
-                    setProgress(0);
-                });
-            }
+        if (name === '' || quantity === 0 || price === 0 || category === '' || details === '') {
+            setError('Please fill all the fields');
+        } else if (image === null) {
+            setError('Please upload an image');
+        } else {
 
-        )
+            const uploadTask = storage.ref(`images/${image.name}`).put(image);
+            uploadTask.on('state_changed',
+                (snapshot) => {
+                    // progrss function ....
+                    const progress = Math.round((snapshot.bytesTransferred / snapshot.totalBytes) * 100);
+                    setProgress(progress);
+                },
+                (error) => {
+                    // error function ....
+                    console.log(error);
+                },
+                () => {
+                    // complete function ....
+                    storage.ref('images').child(image.name).getDownloadURL().then(url => {
+                        db.collection('products').add({
+                            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                            name: name,
+                            quantity: parseInt(quantity),
+                            rating: parseInt(rating),
+                            price: parseInt(price),
+                            category: category,
+                            image: url,
+                            discount: 0,
+                            description: details,
+                            username: admin.email
+                        });
+                        setCategory('');
+                        setQuantity(0);
+                        setName('');
+                        setPrice(0);
+                        setRating(0);
+                        setImage(null);
+                        setDetails('');
+                        setProgress(0);
+                        setError('');
+                    });
+                }
+
+            )
+        }
     }
 
     const handleChange = (e) => {
@@ -64,6 +74,17 @@ function CreateProduct() {
             setImage(e.target.files[0]);
         }
     };
+
+    //categories
+    useEffect(() => {
+        db.collection('categories')
+            .onSnapshot(snapshot => {
+                setCategories(snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    category: doc.data()
+                })))
+            })
+    }, [])
 
     return (
         <>
@@ -89,6 +110,13 @@ function CreateProduct() {
                     <div className="row">
                         <div className="col-lg-6 offset-lg-3 col-md-10 offset-md-1 col-12">
                             <div className="register-form create-prod">
+                                {
+                                    error !== '' ? (
+                                        <div className="alert alert-danger">
+                                            {error}
+                                        </div>
+                                    ) : ('')
+                                }
                                 <form className="row">
                                     <div className="col-sm-6">
                                         <div className="form-group">
@@ -106,7 +134,12 @@ function CreateProduct() {
                                     <div className="col-sm-6">
                                         <div className="form-group">
                                             <label htmlFor="reg-phone">Category</label>
-                                            <input value={category} onChange={event => setCategory(event.target.value)} className="form-control" type="text" id="reg-phone" required />
+                                            <select className="form-control" onChange={event => setCategory(event.target.value)} id="reg-phone">
+                                                <option value="">Select Category</option>
+                                                {categories.map(({ id, category }) => (
+                                                    <option key={id} value={category.name} className="category-options">{category.name}</option>
+                                                ))}
+                                            </select>
                                         </div>
                                     </div>
                                     <div className="col-sm-6">

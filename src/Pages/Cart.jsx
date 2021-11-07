@@ -5,7 +5,7 @@ import { useStateValue } from '../Context/StateProvider'
 import CartProduct from '../Components/CartProduct';
 
 function Cart() {
-    const [{ basket }] = useStateValue();
+    const [{ basket, user }] = useStateValue();
     let orderTotal = 0;
     let total = 0;
     for (let i = 0; i < basket?.length; i++) {
@@ -165,7 +165,14 @@ function Cart() {
                                                         </span></li>
                                                     </ul>
                                                     <div className="button">
-                                                        <Link to="/checkout" className="btn">Checkout</Link>
+                                                        {
+                                                            user ? (
+                                                                <Link to="/checkout" className="btn">Checkout</Link>
+                                                            ) : (
+                                                                <Link to="/login" className="btn">Login to Checkout</Link>
+                                                            )
+                                                        }
+
                                                         <Link to="/products" className="btn btn-alt">Continue shopping</Link>
                                                     </div>
                                                 </div>

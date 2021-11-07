@@ -207,3 +207,7 @@
     -ms-flex-pack: justify;
     justify-content: space-between;
 }
+
+.text-area-check {
+    padding: 10px 10px !important;
+}

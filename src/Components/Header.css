@@ -9,3 +9,13 @@
 .signout:hover {
     color: rgb(50, 80, 0);
 }
+
+.logout-link {
+    cursor: pointer;
+}
+.logout-link:hover {
+    color: blue;
+}
+.cart-wish {
+    margin-right: 1rem;
+}

@@ -1,10 +1,87 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useStateValue } from '../Context/StateProvider'
+import { db } from '../firebase';
 import './Checkout.css'
+import firebase from "firebase";
+import { useHistory } from "react-router-dom";
 
 function Checkout() {
-    const [{ basket }] = useStateValue();
-    console.log(basket);
+    const history = useHistory();
+    const [{ basket, user }, dispatch] = useStateValue();
+    const [fullName, setFullName] = useState('');
+    const [email, setEmail] = useState('');
+    const [phone, setPhone] = useState('');
+    const [city, setCity] = useState('');
+    const [region, setRegion] = useState('');
+    const [country, setCountry] = useState('');
+    const [address, setAddress] = useState('');
+    const [error, setError] = useState('');
+
+    let orderTotal = 0;
+    let total = 0;
+    for (let i = 0; i < basket?.length; i++) {
+        const item = basket[i];
+        orderTotal = orderTotal + item.originalPrice;
+        total = total + item.price;
+    }
+
+    let delivery = 0;
+    if (total > 35) {
+        delivery = 12.99;
+    } else if (total > 15 && total <= 35) {
+        delivery = 4.99;
+    } else if (total > 0 && total <= 15) {
+        delivery = 2.99;
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (fullName === '' || email === '' || phone === '' || city === '' || region === '' || country === '' || address === '') {
+            setError('Please fill in all fields');
+        } else {
+            setError('');
+            db.collection('orders').add({
+                timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                ordertotal: orderTotal + delivery,
+                shipping: delivery,
+                cart: basket,
+                username: user.email,
+                cartsubtotal: orderTotal,
+                order_status: 'pending',
+                customer: {
+                    name: fullName,
+                    email: email,
+                    phonenumber: phone,
+                },
+                address: {
+                    city: city,
+                    region: region,
+                    country: country,
+                    placeOfResidence: address
+                }
+            })
+                .then(() => {
+                    dispatch({
+                        type: 'EMPTY_BASKET'
+                    });
+                })
+                .catch(err => {
+                    console.log(err);
+                });
+
+
+            setFullName('');
+            setEmail('');
+            setPhone('');
+            setCity('');
+            setRegion('');
+            setCountry('');
+            setAddress('');
+            alert('Order Placed Successfully');
+            history.push('/');
+        }
+    }
+
     return (
         <>
             <div className="breadcrumbs">
@@ -30,100 +107,99 @@ function Checkout() {
                     <div className="row justify-content-center">
                         <div className="col-lg-8">
                             <div className="checkout-steps-form-style-1">
-                                <ul id="accordionExample">
-                                    <li>
-                                        <h6 className="title" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-controls="collapseThree">Your Personal Details </h6>
-                                        <section className="checkout-steps-form-content collapse show" id="collapseThree" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
-                                            <div className="row">
-                                                <div className="col-md-12">
-                                                    <div className="single-form form-default">
-                                                        <label>User Name</label>
-                                                        <div className="row">
-                                                            <div className="col-md-6 form-input form">
-                                                                <input type="text" placeholder="First Name" />
-                                                            </div>
-                                                            <div className="col-md-6 form-input form">
-                                                                <input type="text" placeholder="Last Name" />
-                                                            </div>
+                                <form id="accordionExample">
+                                    {
+                                        error !== '' ? (
+                                            <div className="alert alert-danger">
+                                                {error}
+                                            </div>
+                                        ) : ('')
+                                    }
+                                    <h6 className="title" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-controls="collapseThree">Your Personal Details </h6>
+                                    <section className="checkout-steps-form-content collapse show" id="collapseThree" aria-labelledby="headingThree" data-bs-parent="#accordionExample">
+                                        <div className="row">
+                                            <div className="col-md-12">
+                                                <div className="single-form form-default">
+                                                    <label>Full Name</label>
+                                                    <div className="row">
+                                                        <div className="col-md-12 form-input form">
+                                                            <input type="text" placeholder="Full Name" value={fullName} onChange={event => setFullName(event.target.value)} />
                                                         </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <div className="single-form form-default">
-                                                        <label>Email Address</label>
-                                                        <div className="form-input form">
-                                                            <input type="text" placeholder="Email Address" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <div className="single-form form-default">
-                                                        <label>Phone Number</label>
-                                                        <div className="form-input form">
-                                                            <input type="text" placeholder="Phone Number" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-12">
-                                                    <div className="single-form form-default">
-                                                        <label>Mailing Address</label>
-                                                        <div className="form-input form">
-                                                            <input type="text" placeholder="Mailing Address" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <div className="single-form form-default">
-                                                        <label>City</label>
-                                                        <div className="form-input form">
-                                                            <input type="text" placeholder="City" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <div className="single-form form-default">
-                                                        <label>Post Code</label>
-                                                        <div className="form-input form">
-                                                            <input type="text" placeholder="Post Code" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <div className="single-form form-default">
-                                                        <label>Country</label>
-                                                        <div className="form-input form">
-                                                            <input type="text" placeholder="Country" />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-6">
-                                                    <div className="single-form form-default">
-                                                        <label>Region/State</label>
-                                                        <div className="select-items">
-                                                            <select className="form-control">
-                                                                <option value="0">select</option>
-                                                                <option value="1">select option 01</option>
-                                                                <option value="2">select option 02</option>
-                                                                <option value="3">select option 03</option>
-                                                                <option value="4">select option 04</option>
-                                                                <option value="5">select option 05</option>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div className="col-md-12">
-                                                    <div className="single-checkbox checkbox-style-3">
-                                                        <input type="checkbox" id="checkbox-3" />
-                                                        <label for="checkbox-3"><span></span></label>
-                                                        <p>My delivery and mailing addresses are the same.</p>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </section>
-                                    </li>
-                                </ul>
+                                            <div className="col-md-6">
+                                                <div className="single-form form-default">
+                                                    <label>Email Address</label>
+                                                    <div className="form-input form">
+                                                        <input type="text" placeholder="Email Address" value={email} onChange={event => setEmail(event.target.value)} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="single-form form-default">
+                                                    <label>Phone Number</label>
+                                                    <div className="form-input form">
+                                                        <input type="text" placeholder="Phone Number" value={phone} onChange={event => setPhone(event.target.value)} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-12">
+                                                <hr />
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="single-form form-default">
+                                                    <label>Country</label>
+                                                    <div className="form-input form">
+                                                        <input type="text" placeholder="Country" value={country} onChange={event => setCountry(event.target.value)} />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="col-md-6">
+                                                <div className="single-form form-default">
+                                                    <label>City</label>
+                                                    <div className="form-input form">
+                                                        <input type="text" placeholder="City" value={city} onChange={event => setCity(event.target.value)} />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="single-form form-default">
+                                                    <label>Place Of Residence</label>
+                                                    <div className="form-input form">
+                                                        <textarea type="text" placeholder="Place Of Residence" rows="20" className="text-area-check" value={address} onChange={event => setAddress(event.target.value)} />
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className="col-md-6">
+                                                <div className="single-form form-default">
+                                                    <label>Region/State</label>
+                                                    <div className="select-items">
+                                                        <select className="form-control" onChange={event => setRegion(event.target.value)}>
+                                                            <option value="">select</option>
+                                                            <option value="Eastern">Eastern</option>
+                                                            <option value="Western">Western</option>
+                                                            <option value="Northern">Northern</option>
+                                                            <option value="Central">Central</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="col-md-6">
+                                                <div className="single-form form-default">
+                                                    <div className="price-table-btn button">
+                                                        <button className="btn btn-alt" onClick={handleSubmit} >Checkout</button>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </section>
+                                </form>
                             </div>
                         </div>
+                        {/*  */}
                         <div className="col-lg-4">
                             <div className="checkout-sidebar">
                                 <div className="checkout-sidebar-coupon">
@@ -143,27 +219,68 @@ function Checkout() {
                                     <h5 className="title">Pricing Table</h5>
                                     <div className="sub-total-price">
                                         <div className="total-price">
-                                            <p className="value">Subotal Price:</p>
-                                            <p className="price">$144.00</p>
+                                            <p className="value">Cart Subtotal:</p>
+                                            <p className="price">
+                                                {
+                                                    orderTotal.toLocaleString('en-US', {
+                                                        style: 'currency',
+                                                        currency: 'USD',
+                                                        maximumFractionDigits: 2,
+                                                    })
+                                                }
+                                            </p>
                                         </div>
                                         <div className="total-price shipping">
-                                            <p className="value">Subotal Price:</p>
-                                            <p className="price">$10.50</p>
+                                            <p className="value">Shipping:</p>
+                                            <p className="price">
+                                                {
+                                                    basket?.length === 0 ? (
+                                                        <p>0.00</p>
+                                                    ) : (
+                                                        <p>
+                                                            {
+                                                                delivery.toLocaleString('en-US', {
+                                                                    style: 'currency',
+                                                                    currency: 'USD',
+                                                                    maximumFractionDigits: 2,
+                                                                })
+                                                            }
+                                                        </p>)
+
+                                                }
+                                            </p>
                                         </div>
                                         <div className="total-price discount">
-                                            <p className="value">Subotal Price:</p>
-                                            <p className="price">$10.00</p>
+                                            <p className="value">You Save:</p>
+                                            <p className="price">
+                                                {
+                                                    (orderTotal - total).toLocaleString('en-US', {
+                                                        style: 'currency',
+                                                        currency: 'USD',
+                                                        maximumFractionDigits: 2,
+                                                    })
+                                                }
+                                            </p>
                                         </div>
                                     </div>
                                     <div className="total-payable">
                                         <div className="payable-price">
-                                            <p className="value">Subotal Price:</p>
-                                            <p className="price">$164.50</p>
+                                            <p className="value">You Pay:</p>
+                                            <p className="price">
+                                                {
+                                                    basket?.length === 0 ? (
+                                                        <p>0.00</p>
+                                                    ) : (
+                                                        <p>{(basket.reduce((acc, item) => acc + item.price * item.quantity, 0) + delivery).toLocaleString('en-US', {
+                                                            style: 'currency',
+                                                            currency: 'USD',
+                                                            maximumFractionDigits: 2,
+                                                        })}</p>)
+                                                }
+                                            </p>
                                         </div>
                                     </div>
-                                    <div className="price-table-btn button">
-                                        <a href="/" className="btn btn-alt">Checkout</a>
-                                    </div>
+
                                 </div>
                             </div>
                         </div>

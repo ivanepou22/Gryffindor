@@ -174,3 +174,11 @@
     color: #081828;
     cursor: pointer;
 }
+
+.list li a:hover {
+    color: #0167f3 !important;
+}
+
+.product-section {
+    margin-top: -5rem !important;
+}

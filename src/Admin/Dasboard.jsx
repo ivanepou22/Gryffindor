@@ -7,7 +7,9 @@ import { Link } from 'react-router-dom';
 function Dasboard() {
     const [products, setProducts] = useState([]);
     const [categories, setCategories] = useState([]);
-    //get data from firebase
+    const [orders, setOrders] = useState([]);
+
+    //get products from firebase
     useEffect(() => {
         db.collection('products')
             .onSnapshot(snapshot => {
@@ -25,6 +27,17 @@ function Dasboard() {
                 setCategories(snapshot.docs.map(doc => ({
                     id: doc.id,
                     category: doc.data()
+                })))
+            })
+    }, [])
+
+    //Orders
+    useEffect(() => {
+        db.collection('orders')
+            .onSnapshot(snapshot => {
+                setOrders(snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    order: doc.data()
                 })))
             })
     }, [])
@@ -69,15 +82,19 @@ function Dasboard() {
 
                         <div class="col-lg-3 col-md-6 col-12">
                             <div class="single-product">
-                                <div class="product-info">
-                                    <span class="category">Orders</span>
-                                    <h4 class="title">
-                                        <hr />
-                                    </h4>
-                                    <div class="price">
-                                        <span>00.00</span>
+                                <Link to="/admin/orders" className="title-container">
+                                    <div class="product-info">
+                                        <span class="category">Orders</span>
+                                        <h4 class="title">
+                                            <hr />
+                                        </h4>
+                                        <div class="price">
+                                            <span>
+                                                {orders?.length.toFixed(2)}
+                                            </span>
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                             </div>
                         </div>
 

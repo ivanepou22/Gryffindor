@@ -21,6 +21,11 @@ import ProductList from "./Admin/ProductList";
 import CreateProduct from "./Admin/CreateProduct";
 import CreateCategory from "./Admin/CreateCategory";
 import CategoryList from "./Admin/CategoryList";
+import OrderList from "./Admin/OrderList";
+import OrderDetails from "./Admin/OrderDetails";
+import CustomerOrders from "./Pages/customerOrders";
+import WishList from "./Components/WishList";
+import ProductsSort from "./Pages/ProductsSort";
 
 function App() {
   const [{user, admin}, dispatch] = useStateValue();
@@ -108,11 +113,25 @@ function App() {
               <Products />
               <Footer />
             </Route>
+            <Route exact path="/products/:category">
+              <Header/>
+              <ProductsSort />
+              <Footer />
+            </Route>
+            <Route exact path="/orders">
+              <Header/>
+                <CustomerOrders />
+              <Footer />
+            </Route>
+            <Route exact path="/wishlist">
+              <Header/>
+                <WishList />
+              <Footer />
+            </Route>
             <Route exact path="/admin">
                 <HeaderAdmin />
                 <Admin />
             </Route>
-
             <Route exact path="/admin/login">
               <HeaderAdmin />
               <LoginAdmin />
@@ -125,6 +144,7 @@ function App() {
               <HeaderAdmin />
               <ProductList />
             </Route>
+
             <Route exact path="/admin/createproduct">
               <HeaderAdmin />
               <CreateProduct />
@@ -136,6 +156,14 @@ function App() {
             <Route exact path="/admin/createcategories">
               <HeaderAdmin />
               <CreateCategory />
+            </Route>
+            <Route exact path="/admin/orders">
+              <HeaderAdmin />
+              <OrderList />
+            </Route>
+            <Route exact path="/admin/order/:id">
+              <HeaderAdmin />
+              <OrderDetails />
             </Route>
             <Route exact path="/">
               <Header/>

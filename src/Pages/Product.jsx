@@ -9,8 +9,9 @@ import { useStateValue } from '../Context/StateProvider'
 import { Link, useLocation, useParams } from "react-router-dom";
 
 function Product() {
-    const [{ basket }, dispatch] = useStateValue();
+    const [{ basket, wishlist }, dispatch] = useStateValue();
     console.log(basket);
+    console.log(wishlist);
     const location = useLocation();
     const product = location.state;
     const { id } = useParams();
@@ -26,12 +27,32 @@ function Product() {
     ) : (
         productPrice = (product.price - (product.price * product.discount / 100))
     )
-    console.log(`product: ${id} ${product}`)
     const addToBasket = () => {
         //add item to the basket
         dispatch({
             type: 'ADD_TO_BASKET',
             item: {
+                id: id,
+                name: product.name,
+                image: product.image,
+                description: product.description,
+                price: productPrice,
+                originalPrice: product.price,
+                rating: product.rating,
+                discount: product.discount,
+                quantity: parseInt(quantity),
+                color: 'black',
+                category: product.category
+            }
+        })
+    }
+
+    const addToWishlist = () => {
+        //add item to the wishlist
+        console.log('add to wishlist');
+        dispatch({
+            type: 'ADD_TO_WISHLIST',
+            wish: {
                 id: id,
                 name: product.name,
                 image: product.image,
@@ -194,7 +215,7 @@ function Product() {
                                             </div>
                                             <div className="col-lg-4 col-md-4 col-12">
                                                 <div className="wish-button">
-                                                    <button className="btn"><i className="lni lni-heart"></i> To Wishlist</button>
+                                                    <button className="btn" onClick={addToWishlist}><i className="lni lni-heart"></i> To Wishlists</button>
                                                 </div>
                                             </div>
                                         </div>

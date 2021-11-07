@@ -3,11 +3,18 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { db } from '../firebase'
 import './Products.css'
+import { useLocation, useParams } from "react-router-dom";
 
-function Products() {
+function ProductsSort() {
     const [products, setProducts] = useState([]);
-
     const [categories, setCategories] = useState([]);
+    const location = useLocation();
+    const categoryValue = location.state;
+    const { category } = useParams();
+
+    console.log(categoryValue);
+    console.log(category);
+
     //get categories from firebase
     useEffect(() => {
         db.collection('categories')
@@ -38,7 +45,7 @@ function Products() {
                     <div className="row align-items-center">
                         <div className="col-lg-6 col-md-6 col-12">
                             <div className="breadcrumbs-content">
-                                <h1 className="page-title">Products</h1>
+                                <h1 className="page-title">Products - {category}</h1>
                             </div>
                         </div>
                         <div className="col-lg-6 col-md-6 col-12">
@@ -89,7 +96,7 @@ function Products() {
 
                                 <div className="single-widget range">
                                     <h3>Price Range</h3>
-                                    <input type="range" className="form-range" name="range" step="1" min="100" max="10000" value="10" onchange="rangePrimary.value=value" />
+                                    <input type="range" className="form-range" name="range" step="1" min="100" max="10000" onchange="rangePrimary.value=value" />
                                     <div className="range-inner">
                                         <label>$</label>
                                         <input type="text" id="rangePrimary" placeholder="100" />
@@ -213,92 +220,101 @@ function Products() {
                                     <div className="tab-pane fade active show" id="nav-grid" role="tabpanel" aria-labelledby="nav-grid-tab">
                                         <div className="row">
                                             {
-                                                products.map(({ id, product }) => (
-                                                    <div className="col-lg-4 col-md-6 col-12" key={id}>
-                                                        {/* <!-- Start Single Product --> */}
-                                                        <div className="single-product">
-                                                            <div className="product-image">
-                                                                <img src={product.image} alt="#" />
-                                                                {
-                                                                    product.discount === 0 ? ('') : (
-                                                                        <span className="sale-tag">-{product.discount}%</span>
-                                                                    )
-                                                                }
-                                                                <Link key={product.id}
-                                                                    to={{
-                                                                        pathname: `/product/${id}`,
-                                                                        state: product,
-                                                                    }}
-                                                                >
-                                                                    <div className="button">
-                                                                        <button className="btn"><i className="lni lni-cart"></i> Add to Cart</button>
-                                                                    </div>
-                                                                </Link>
-                                                            </div>
-                                                            <div className="product-info">
-                                                                <span className="category">{product.category}</span>
-                                                                <h4 className="title">
+                                                products.filter(({ id, product }) => product.category === category).map(({ id, product }) => (
+                                                    product ? (
+                                                        <div className="col-lg-4 col-md-6 col-12" key={id}>
+                                                            {/* <!-- Start Single Product --> */}
+                                                            <div className="single-product">
+                                                                <div className="product-image">
+                                                                    <img src={product.image} alt="#" />
+                                                                    {
+                                                                        product.discount === 0 ? ('') : (
+                                                                            <span className="sale-tag">-{product.discount}%</span>
+                                                                        )
+                                                                    }
                                                                     <Link key={product.id}
                                                                         to={{
                                                                             pathname: `/product/${id}`,
                                                                             state: product,
                                                                         }}
                                                                     >
-                                                                        {product.name}
+                                                                        <div className="button">
+                                                                            <button className="btn"><i className="lni lni-cart"></i> Add to Cart</button>
+                                                                        </div>
                                                                     </Link>
-                                                                </h4>
-                                                                <ul className="review">
-                                                                    {
-                                                                        Array(product.rating).fill().map((_, index) => (
-                                                                            <li key={index}><i className="lni lni-star-filled"></i></li>
-                                                                        ))
-                                                                    }
-                                                                    <li><span>{product.rating} Review(s)</span></li>
-                                                                </ul>
-                                                                <div className="price">
-                                                                    {
-                                                                        product.discount === 0 ? (
-                                                                            <span>
-                                                                                {
-                                                                                    product.price.toLocaleString('en-US', {
-                                                                                        style: 'currency',
-                                                                                        currency: 'USD',
-                                                                                        maximumFractionDigits: 2,
-                                                                                    })
-                                                                                }
-                                                                            </span>
-                                                                        ) : (
-                                                                            <span>
-                                                                                {
-                                                                                    (product.price - (product.price * product.discount / 100)).toLocaleString('en-US', {
-                                                                                        style: 'currency',
-                                                                                        currency: 'USD',
-                                                                                        maximumFractionDigits: 2,
-                                                                                    })
-                                                                                }
-                                                                            </span>
-                                                                        )
+                                                                </div>
+                                                                <div className="product-info">
+                                                                    <span className="category">{product.category}</span>
+                                                                    <h4 className="title">
+                                                                        <Link key={product.id}
+                                                                            to={{
+                                                                                pathname: `/product/${id}`,
+                                                                                state: product,
+                                                                            }}
+                                                                        >
+                                                                            {product.name}
+                                                                        </Link>
+                                                                    </h4>
+                                                                    <ul className="review">
+                                                                        {
+                                                                            Array(product.rating).fill().map((_, index) => (
+                                                                                <li key={index}><i className="lni lni-star-filled"></i></li>
+                                                                            ))
+                                                                        }
+                                                                        <li><span>{product.rating} Review(s)</span></li>
+                                                                    </ul>
+                                                                    <div className="price">
+                                                                        {
+                                                                            product.discount === 0 ? (
+                                                                                <span>
+                                                                                    {
+                                                                                        product.price.toLocaleString('en-US', {
+                                                                                            style: 'currency',
+                                                                                            currency: 'USD',
+                                                                                            maximumFractionDigits: 2,
+                                                                                        })
+                                                                                    }
+                                                                                </span>
+                                                                            ) : (
+                                                                                <span>
+                                                                                    {
+                                                                                        (product.price - (product.price * product.discount / 100)).toLocaleString('en-US', {
+                                                                                            style: 'currency',
+                                                                                            currency: 'USD',
+                                                                                            maximumFractionDigits: 2,
+                                                                                        })
+                                                                                    }
+                                                                                </span>
+                                                                            )
 
-                                                                    }
-                                                                    {
-                                                                        product.discount === 0 ? ('') : (
-                                                                            <span className="discount-price">
-                                                                                {
-                                                                                    product.price.toLocaleString('en-US', {
-                                                                                        style: 'currency',
-                                                                                        currency: 'USD',
-                                                                                        maximumFractionDigits: 2,
-                                                                                    })
-                                                                                }
-                                                                            </span>
-                                                                        )
-                                                                    }
+                                                                        }
+                                                                        {
+                                                                            product.discount === 0 ? ('') : (
+                                                                                <span className="discount-price">
+                                                                                    {
+                                                                                        product.price.toLocaleString('en-US', {
+                                                                                            style: 'currency',
+                                                                                            currency: 'USD',
+                                                                                            maximumFractionDigits: 2,
+                                                                                        })
+                                                                                    }
+                                                                                </span>
+                                                                            )
+                                                                        }
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            {/* <!-- End Single Product --> */}
+                                                        </div>
+                                                    ) : (
+                                                        <div className="col-lg-4 col-md-6 col-12">
+                                                            <div className="single-product">
+                                                                <div className="product-image">
+                                                                    <p>Empty List</p>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        {/* <!-- End Single Product --> */}
-                                                    </div>
-
+                                                    )
                                                 ))
                                             }
                                         </div>
@@ -328,4 +344,4 @@ function Products() {
     )
 }
 
-export default Products
+export default ProductsSort
