@@ -26,6 +26,7 @@ import OrderDetails from "./Admin/OrderDetails";
 import CustomerOrders from "./Pages/customerOrders";
 import WishList from "./Components/WishList";
 import ProductsSort from "./Pages/ProductsSort";
+import CustomerOrderDetails from "./Pages/CustomerOrderDetails";
 
 function App() {
   const [{user, admin}, dispatch] = useStateValue();
@@ -121,6 +122,11 @@ function App() {
             <Route exact path="/orders">
               <Header/>
                 <CustomerOrders />
+              <Footer />
+            </Route>
+            <Route exact path="/order/:id">
+              <Header />
+              <CustomerOrderDetails />
               <Footer />
             </Route>
             <Route exact path="/wishlist">

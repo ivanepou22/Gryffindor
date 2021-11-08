@@ -55,8 +55,8 @@ function CustomerOrders() {
                                 <div className="col-lg-1 col-md-3 col-12">
                                     <p>Shipping</p>
                                 </div>
-                                <div className="col-lg-2 col-md-3 col-12">
-                                    <p>Order Total</p>
+                                <div className="col-lg-1 col-md-3 col-12">
+                                    <p>Total</p>
                                 </div>
                                 <div className="col-lg-1 col-md-2 col-12">
                                     <p>Items</p>
@@ -66,6 +66,9 @@ function CustomerOrders() {
                                 </div>
                                 <div className="col-lg-2 col-md-2 col-12">
                                     <p>Username</p>
+                                </div>
+                                <div className="col-lg-1 col-md-2 col-12">
+                                    <p>Status</p>
                                 </div>
                             </div>
                         </div>
@@ -81,7 +84,7 @@ function CustomerOrders() {
                                         <div className="col-lg-3 col-md-3 col-12">
                                             <Link key={id}
                                                 to={{
-                                                    pathname: `/admin/order/${id}`,
+                                                    pathname: `/order/${id}`,
                                                     state: order,
                                                 }}
                                             >
@@ -94,7 +97,7 @@ function CustomerOrders() {
                                         <div className="col-lg-1 col-md-3 col-12">
                                             <p>{order.shipping.toLocaleString('en-US', { style: 'currency', currency: 'USD' })}</p>
                                         </div>
-                                        <div className="col-lg-2 col-md-3 col-12">
+                                        <div className="col-lg-1 col-md-3 col-12">
                                             <p>
                                                 {
                                                     order.ordertotal.toLocaleString('en-US', { style: 'currency', currency: 'USD' })
@@ -113,6 +116,9 @@ function CustomerOrders() {
                                         </div>
                                         <div className="col-lg-2 col-md-2 col-12">
                                             <p>{order.username}</p>
+                                        </div>
+                                        <div className="col-lg-1 col-md-2 col-12">
+                                            <p>{order.order_status}</p>
                                         </div>
                                     </div>
                                 </div>

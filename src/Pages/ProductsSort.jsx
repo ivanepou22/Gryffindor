@@ -88,7 +88,7 @@ function ProductsSort() {
                                                     {category.name}</Link></li>
                                         ))}
                                         <li>
-                                            {/* <Link to="/products">Computers &amp; Accessories </Link><span>(1138)</span> */}
+                                            <Link to="/products">Clear Filter </Link>
                                         </li>
                                     </ul>
                                 </div>
