@@ -31,20 +31,7 @@ function CartProduct({ item }) {
                         </p>
                     </div>
                     <div className="col-lg-2 col-md-2 col-12">
-                        <div className="count-input">
-                            <select className="form-control">
-                                <option value={item.quantity}>{item.quantity}</option>
-                                <option value={1}>1</option>
-                                <option value={2}>2</option>
-                                <option value={3}>3</option>
-                                <option value={4}>4</option>
-                                <option value={5}>5</option>
-                                <option value={6}>6</option>
-                                <option value={7}>7</option>
-                                <option value={8}>8</option>
-                                <option value={9}>9</option>
-                            </select>
-                        </div>
+                        <p className="product-price">{item.quantity.toFixed(2)}</p>
                     </div>
                     <div className="col-lg-2 col-md-2 col-12">
                         <p>{item.originalPrice.toLocaleString('en-US', {
