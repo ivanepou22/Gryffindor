@@ -40,7 +40,6 @@ function Header() {
                                         <li>
                                             <div className="select-position">
                                                 <select id="select4">
-                                                    <option value="UGX">UGX UGSHS</option>
                                                     <option value="USD">$ USD</option>
                                                     <option value="EURO">€ EURO</option>
                                                     <option value="CAD">$ CAD</option>
