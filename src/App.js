@@ -53,7 +53,7 @@ function App() {
       unsubscribe();
     };
 
-  }, [])
+  }, [dispatch])
 
   useEffect(() => {
     const unsubscribeadmin = auth.onAuthStateChanged((adminUser) => {
@@ -74,7 +74,7 @@ function App() {
     return () => {
       unsubscribeadmin();
     }
-  }, [])
+  }, [dispatch])
 
 
   console.log(`user is: ${user}`)
